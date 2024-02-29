@@ -18,6 +18,10 @@ export const validateUserRegisterData = (userData) => {
     return ReactToast("Please enter your Password", "error");
   }
 
+  if (userData.password.length < 8) {
+    return ReactToast("Your password legnth must greater thatn 8 characters", "error");
+  }
+
   if (!userData.email && !validateEmail(userData.email)) {
     return ReactToast("Please double check your Email", "error");
   }
