@@ -16,9 +16,6 @@ import {
   UserCircleIcon,
   CodeBracketSquareIcon,
   ChevronDownIcon,
-  Cog6ToothIcon,
-  InboxArrowDownIcon,
-  LifebuoyIcon,
   PowerIcon,
   Bars2Icon,
 } from "@heroicons/react/24/solid";
@@ -30,21 +27,10 @@ import Cookies from "js-cookie";
 // profile menu component
 const profileMenuItems = [
   {
-    label: "My Profile",
+    label: "Dashboard",
     icon: UserCircleIcon,
   },
-  {
-    label: "Edit Profile",
-    icon: Cog6ToothIcon,
-  },
-  {
-    label: "Inbox",
-    icon: InboxArrowDownIcon,
-  },
-  {
-    label: "Help",
-    icon: LifebuoyIcon,
-  },
+
   {
     label: "Sign Out",
     icon: PowerIcon,
