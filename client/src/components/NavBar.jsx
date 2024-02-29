@@ -53,7 +53,7 @@ const profileMenuItems = [
 
 const navListItems = [
   {
-    label: "Latest Articles",
+    label: "Articles",
     icon: UserCircleIcon,
   },
   {
@@ -192,7 +192,7 @@ export function ComplexNavbar() {
           Musify
         </Typography>
 
-        <div className="hidden lg:flex lg:justify-center lg:mr-16">
+        <div className="hidden lg:flex lg:mr-36">
           <NavList />
         </div>
 
@@ -210,19 +210,7 @@ export function ComplexNavbar() {
 
         <div className="flex items-center">
           {loggedIn ? (
-            <>
-              <Button
-                variant="text"
-                size="lg"
-                color="white"
-                onClick={logout}
-                className="mr-2"
-                placeholder={"login"}
-              >
-                <span>Log Out</span>
-              </Button>
-              <ProfileMenu />
-            </>
+            <ProfileMenu />
           ) : (
             <Button
               variant="text"
