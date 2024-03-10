@@ -24,7 +24,9 @@ const Hero = () => {
                 your favorite songs to sheet music using Artificial intelligence
                 and Machine Learning.
               </p>
-              <ButtonPrimary addClass="mt-5 text-white">Get Started</ButtonPrimary>
+              <ButtonPrimary addClass="mt-5 text-white">
+                Get Started
+              </ButtonPrimary>
             </div>
             <div className="flex w-full">
               <motion.div className="h-full w-full" variants={scrollAnimation}>
