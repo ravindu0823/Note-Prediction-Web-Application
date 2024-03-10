@@ -4,6 +4,7 @@ import { SignInContext } from "../contexts/SignInContext";
 import Cookies from "js-cookie";
 import Hero from "../components/Hero";
 import Features from "../components/Feature";
+import FeaturesComponent from "../components/Features";
 
 const Home = () => {
   const { setLoggedIn } = useContext(SignInContext);
@@ -21,7 +22,8 @@ const Home = () => {
             <Hero />
           </div>
         </div>
-        <Features />
+        {/* <Features /> */}
+        <FeaturesComponent />
       </div>
     </>
   );
