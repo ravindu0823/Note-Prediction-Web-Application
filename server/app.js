@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import userRouter from "./routes/users.js";
+import newsRouter from "./routes/news.js";
 
 dotenv.config();
 
@@ -36,5 +37,6 @@ app.use((err, req, res, next) => {
 app.use(express.json());
 
 app.use("/users", userRouter);
+app.use("/news", newsRouter);
 
 export default app;
