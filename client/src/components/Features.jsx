@@ -8,7 +8,7 @@ const FeaturesComponent = () => {
 
   return (
     <>
-      <section>
+      <section id="features">
         <div className="gap-8 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 xl:gap-16 sm:py-16 lg:px-6 ">
           <ScrollAnimationWrapper className="flex w-full my-auto">
             <motion.div
@@ -25,7 +25,7 @@ const FeaturesComponent = () => {
 
           <ScrollAnimationWrapper>
             <motion.div
-              className="text-gray-500 dark:text-gray-400 sm:text-lg"
+              className="text-gray-400 sm:text-lg"
               variants={scrollAnimation}
             >
               <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-white">
@@ -36,11 +36,21 @@ const FeaturesComponent = () => {
                 of traditional ITSM solutions.Accelerate critical development
                 work, eliminate toil, and deploy changes with ease.
               </p>
-              <div className="py-8 mb-6 border-t border-b border-gray-200 dark:border-gray-700">
-                <div className="flex">
-                  <div className="flex justify-center items-center mr-4 w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900 shrink-0">
+              <div className="py-8 mb-6 border-t border-b border-gray-700">
+                <motion.div
+                  className="flex"
+                  variants={scrollAnimation}
+                  custom={{ duration: 2 }}
+                  whileHover={{
+                    scale: 1.1,
+                    transition: {
+                      duration: 0.2,
+                    },
+                  }}
+                >
+                  <div className="flex justify-center items-center mr-4 w-8 h-8 rounded-full bg-primary-900 shrink-0">
                     <svg
-                      className="w-5 h-5 text-primary-600 dark:text-primary-300"
+                      className="w-5 h-5 text-primary-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -53,17 +63,17 @@ const FeaturesComponent = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                    <h3 className="mb-2 text-xl font-bold text-white">
                       Private repos
                     </h3>
-                    <p className="mb-2 font-light text-gray-500 dark:text-gray-400">
+                    <p className="mb-2 font-light text-gray-400">
                       Host code that you don{"'"}t want to share with the world
                       in private GitHub repos only accessible to you and people
                       you share them with.
                     </p>
                     <a
                       href="#"
-                      className="inline-flex items-center text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-600"
+                      className="inline-flex items-center text-primary-500 hover:text-primary-600"
                     >
                       Learn more
                       <svg
@@ -80,11 +90,21 @@ const FeaturesComponent = () => {
                       </svg>
                     </a>
                   </div>
-                </div>
-                <div className="flex pt-8">
-                  <div className="flex justify-center items-center mr-4 w-8 h-8 bg-purple-100 rounded-full dark:bg-purple-900 shrink-0">
+                </motion.div>
+                <motion.div
+                  className="flex pt-8"
+                  variants={scrollAnimation}
+                  custom={{ duration: 3 }}
+                  whileHover={{
+                    scale: 1.1,
+                    transition: {
+                      duration: 0.2,
+                    },
+                  }}
+                >
+                  <div className="flex justify-center items-center mr-4 w-8 h-8 rounded-full bg-purple-900 shrink-0">
                     <svg
-                      className="w-5 h-5 text-purple-600 dark:text-purple-300"
+                      className="w-5 h-5 text-purple-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -97,16 +117,16 @@ const FeaturesComponent = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                    <h3 className="mb-2 text-xl font-bold text-white">
                       Dependency graph
                     </h3>
-                    <p className="mb-2 font-light text-gray-500 dark:text-gray-400">
+                    <p className="mb-2 font-light text-gray-400">
                       See the packages your project depends on, the repositories
                       that depend on them, and any vulnerabilities detected.
                     </p>
                     <a
                       href="#"
-                      className="inline-flex items-center text-purple-600 hover:text-purple-800 dark:text-purple-500 dark:hover:text-purple-600"
+                      className="inline-flex items-center text-purple-500 hover:text-purple-600"
                     >
                       Learn more
                       <svg
@@ -123,11 +143,21 @@ const FeaturesComponent = () => {
                       </svg>
                     </a>
                   </div>
-                </div>
-                <div className="flex pt-8">
-                  <div className="flex justify-center items-center mr-4 w-8 h-8 bg-teal-100 rounded-full dark:bg-teal-900 shrink-0">
+                </motion.div>
+                <motion.div
+                  className="flex pt-8"
+                  variants={scrollAnimation}
+                  custom={{ duration: 4 }}
+                  whileHover={{
+                    scale: 1.1,
+                    transition: {
+                      duration: 0.2,
+                    },
+                  }}
+                >
+                  <div className="flex justify-center items-center mr-4 w-8 h-8 rounded-full bg-teal-900 shrink-0">
                     <svg
-                      className="w-5 h-5 text-teal-600 dark;text-teal-300"
+                      className="w-5 h-5 text-teal-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -140,17 +170,17 @@ const FeaturesComponent = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                    <h3 className="mb-2 text-xl font-bold text-white">
                       Code scanning
                     </h3>
-                    <p className="mb-2 font-light text-gray-500 dark:text-gray-400">
+                    <p className="mb-2 font-light text-gray-400">
                       Find vulnerabilities in custom code using static analysis.
                       Prevent new vulnerabilities from being introduced by
                       scanning every pull request.
                     </p>
                     <a
                       href="#"
-                      className="inline-flex items-center text-teal-600 hover:text-teal-800 dark:text-teal-500 dark:hover:text-teal-600"
+                      className="inline-flex items-center text-teal-500 hover:text-teal-600"
                     >
                       Learn more
                       <svg
@@ -167,7 +197,7 @@ const FeaturesComponent = () => {
                       </svg>
                     </a>
                   </div>
-                </div>
+                </motion.div>
               </div>
               <p className="text-sm">
                 Deliver great service experiences fast - without the complexity
