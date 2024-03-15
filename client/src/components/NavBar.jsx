@@ -18,6 +18,7 @@ import {
   ChevronDownIcon,
   PowerIcon,
   Bars2Icon,
+  HomeIcon,
 } from "@heroicons/react/24/solid";
 import musify_logo from "../assets/images/musify_logo.webp";
 import { useNavigate } from "react-router-dom";
@@ -39,16 +40,24 @@ const profileMenuItems = [
 
 const navListItems = [
   {
+    label: "Home",
+    icon: HomeIcon,
+    link: "/",
+  },
+  {
     label: "Articles",
     icon: UserCircleIcon,
+    link: "/articles",
   },
   {
     label: "Features",
     icon: CubeTransparentIcon,
+    link: "#features",
   },
   {
     label: "About Us",
     icon: CodeBracketSquareIcon,
+    link: "/about",
   },
 ];
 
@@ -121,12 +130,12 @@ function ProfileMenu() {
 function NavList() {
   return (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center ">
-      {navListItems.map(({ label, icon }) => (
+      {navListItems.map(({ label, icon, link }) => (
         <Typography
           key={label}
           as={"a"}
           placeholder={true}
-          href="#"
+          href={link}
           className="font-medium hover:text-black"
         >
           <MenuItem className="flex items-center gap-2" placeholder={true}>
