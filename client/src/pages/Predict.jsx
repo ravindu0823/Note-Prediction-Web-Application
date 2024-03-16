@@ -1,7 +1,8 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import audioFile from "../assets/audio/audio.mp3";
 import { useWavesurfer } from "@wavesurfer/react";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
+import Timeline from "wavesurfer.js/dist/plugins/timeline.esm.js";
 
 const Predict = () => {
   const containerRef = useRef();
@@ -20,25 +21,49 @@ const Predict = () => {
       drag: false,
       resize: true,
     });
+
+    regions.addRegion({
+      start: 10,
+      end: 20,
+      content: "Resize me",
+      color: randomColor(),
+      drag: false,
+      resize: true,
+    });
   };
 
   const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
     url: audioFile,
-    waveColor: "purple",
+    waveColor: "green",
     height: 100,
-    onReady: addRegionMarker, // Call addRegionMarker when the audio file is loaded
+    plugins: useMemo(() => [Timeline.create(), RegionsPlugin.create()], []),
   });
 
   const onPlayPause = () => {
     wavesurfer && wavesurfer.playPause();
   };
 
+  useEffect(() => {
+    if (wavesurfer) {
+      wavesurfer.on("ready", () => {
+        wavesurfer.play();
+        addRegionMarker();
+      });
+    }
+  }, [isReady, wavesurfer]);
+
+  /* wavesurfer.on("decode", () => {
+    console.log("Audio decoded");
+  }) */
+
   return (
     <>
       <div ref={containerRef} />
 
       <button onClick={onPlayPause}>{isPlaying ? "Pause" : "Play"}</button>
+
+      <button onClick={addRegionMarker}>Add Region</button>
     </>
   );
 };
