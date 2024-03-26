@@ -18,7 +18,7 @@ function App() {
     <>
       <BrowserRouter>
         <SignInContext.Provider value={{ loggedIn, setLoggedIn }}>
-        <ComplexNavbar />
+          {/* <ComplexNavbar /> */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
