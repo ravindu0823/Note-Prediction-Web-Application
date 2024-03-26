@@ -4,14 +4,13 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import userRouter from "./routes/users.js";
 import newsRouter from "./routes/news.js";
+import predictionRouter from "./routes/predicts.js";
 
 dotenv.config();
 
 const app = express();
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-  ],
+  origin: ["http://localhost:5173"],
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -38,5 +37,6 @@ app.use(express.json());
 
 app.use("/users", userRouter);
 app.use("/news", newsRouter);
+app.use("/predict", predictionRouter);
 
 export default app;
