@@ -36,7 +36,7 @@ newsRouter.get("/", async (req, res) => {
     await connectToDB();
 
     // find first 10 news
-    const news = await News.find().limit(6);
+    const news = await News.find();
 
     return res.status(200).json({ news });
   } catch (error) {
