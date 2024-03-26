@@ -7,7 +7,7 @@ const Articles = () => {
       <div className="bg-[#111827] text-white">
         <div className="bg-hero-image h-screen bg-cover">
           <div className="mx-auto max-w-screen-xl">
-            <ComplexNavbar />
+            <ComplexNavbar className="p-7" />
             <Article />
           </div>
         </div>
