@@ -33,8 +33,6 @@ const NewsSchema = new Schema({
   },
 });
 
-
-
 const News = models.News || model("News", NewsSchema);
 
 export default News;
