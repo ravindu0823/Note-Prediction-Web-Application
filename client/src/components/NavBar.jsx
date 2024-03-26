@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Navbar,
   Typography,
@@ -21,7 +21,7 @@ import {
   HomeIcon,
 } from "@heroicons/react/24/solid";
 import musify_logo from "../assets/images/musify_logo.webp";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SignInContext } from "../contexts/SignInContext";
 import Cookies from "js-cookie";
 
@@ -148,10 +148,20 @@ function NavList() {
   );
 }
 
-export function ComplexNavbar() {
-  const [isNavOpen, setIsNavOpen] = React.useState(false);
+export function ComplexNavbar({ className }) {
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
   const { loggedIn, setLoggedIn } = useContext(SignInContext);
+  const location = useLocation();
+  const [navbarColor, setNavbarColor] = useState("blue-gray");
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setNavbarColor("transparent");
+    } else {
+      setNavbarColor("blue-gray");
+    }
+  }, [location.pathname]);
 
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
 
@@ -168,8 +178,9 @@ export function ComplexNavbar() {
     );
   }, []);
 
+  // console.log(location.pathname);
   return (
-    <Navbar className="p-7" color="transparent" placeholder={"true"}>
+    <Navbar className={className} color={navbarColor} placeholder={"true"}>
       <div className="relative mx-auto flex items-center text-white font-bold">
         <img
           src={musify_logo}
@@ -225,6 +236,7 @@ export function ComplexNavbar() {
             color="white"
             className="mr-2 bg-light-blue-700 rounded-full ms-7"
             placeholder={"get started"}
+            onClick={() => navigate("/predict")} 
           >
             <span>Get Started</span>
           </Button>
