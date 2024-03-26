@@ -16,10 +16,7 @@ const Article = () => {
 
   return (
     <>
-      <div
-        aria-label="Related articles"
-        className=" bg-gray-900 rounded-lg"
-      >
+      <div aria-label="Related articles" className=" bg-gray-900 rounded-lg mt-5 h-[750px] overflow-auto">
         <div className="px-4 mx-auto">
           <h2 className="mb-8 text-2xl font-bold  text-white">Read Next</h2>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
