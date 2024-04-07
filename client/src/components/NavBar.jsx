@@ -157,7 +157,7 @@ export function ComplexNavbar({ className }) {
   const [navbarColor, setNavbarColor] = useState("blue-gray");
 
   useEffect(() => {
-    if (location.pathname === "/" || location.pathname === "/feedback") {
+    if (location.pathname === "/" || location.pathname === "/feedback" || location.pathname === "/about") {
       setNavbarColor("transparent");
     } else {
       setNavbarColor("blue-gray");
