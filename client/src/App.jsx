@@ -10,6 +10,8 @@ import Articles from "./pages/Articles";
 import Footer from "./components/Footer";
 import Predict from "./pages/Predict";
 import { ComplexNavbar } from "./components/NavBar";
+import Feedback from "./pages/Feedback";
+import AboutUs from "./pages/AboutUs";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -25,6 +27,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/articles" element={<Articles />} />
             <Route path="/predict" element={<Predict />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/feedback" element={<Feedback />} />
           </Routes>
           <Footer />
         </SignInContext.Provider>
