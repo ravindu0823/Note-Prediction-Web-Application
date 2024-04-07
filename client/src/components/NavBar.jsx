@@ -19,6 +19,7 @@ import {
   PowerIcon,
   Bars2Icon,
   HomeIcon,
+  PhoneIcon,
 } from "@heroicons/react/24/solid";
 import musify_logo from "../assets/images/musify_logo.webp";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -50,14 +51,14 @@ const navListItems = [
     link: "/articles",
   },
   {
-    label: "Features",
-    icon: CubeTransparentIcon,
-    link: "#features",
-  },
-  {
     label: "About Us",
     icon: CodeBracketSquareIcon,
     link: "/about",
+  },
+  {
+    label: "Contact Us",
+    icon: PhoneIcon,
+    link: "/feedback",
   },
 ];
 
@@ -156,7 +157,7 @@ export function ComplexNavbar({ className }) {
   const [navbarColor, setNavbarColor] = useState("blue-gray");
 
   useEffect(() => {
-    if (location.pathname === "/") {
+    if (location.pathname === "/" || location.pathname === "/feedback") {
       setNavbarColor("transparent");
     } else {
       setNavbarColor("blue-gray");
@@ -178,7 +179,7 @@ export function ComplexNavbar({ className }) {
     );
   }, []);
 
-  // console.log(location.pathname);
+  console.log(location.pathname);
   return (
     <Navbar className={className} color={navbarColor} placeholder={"true"}>
       <div className="relative mx-auto flex items-center text-white font-bold">
@@ -198,7 +199,7 @@ export function ComplexNavbar({ className }) {
           Musify
         </Typography>
 
-        <div className="hidden lg:flex lg:mr-36">
+        <div className="hidden lg:flex lg:mr-16">
           <NavList />
         </div>
 
@@ -209,7 +210,7 @@ export function ComplexNavbar({ className }) {
           color="blue-gray"
           variant="text"
           onClick={toggleIsNavOpen}
-          className="ml-auto mr-2 lg:hidden"
+          className="ml-auto lg:hidden"
         >
           <Bars2Icon className="h-6 w-6" />
         </IconButton>
@@ -223,7 +224,7 @@ export function ComplexNavbar({ className }) {
               size="lg"
               color="white"
               onClick={() => navigate("/login")}
-              className="mr-2"
+              className="lg:mr-2"
               placeholder={"login"}
             >
               <span>Log In</span>
@@ -234,9 +235,9 @@ export function ComplexNavbar({ className }) {
             variant="text"
             size="lg"
             color="white"
-            className="mr-2 bg-light-blue-700 rounded-full ms-7"
+            className="mr-2 bg-light-blue-700 rounded-full ms-7 hidden lg:block"
             placeholder={"get started"}
-            onClick={() => navigate("/predict")} 
+            onClick={() => navigate("/predict")}
           >
             <span>Get Started</span>
           </Button>
