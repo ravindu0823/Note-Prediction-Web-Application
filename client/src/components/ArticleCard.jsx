@@ -4,7 +4,7 @@ const ArticleCard = ({ image, title, target }) => {
   return (
     <>
       <article>
-        <a href={target}>
+        <a href={target} target="_blank">
           <img
             src={image}
             className="mb-5 w-full max-w-full rounded-lg"
@@ -12,7 +12,9 @@ const ArticleCard = ({ image, title, target }) => {
           />
         </a>
         <h2 className="mb-2 text-xl font-bold leading-tight  text-white">
-          <a href={target}>{title}</a>
+          <a href={target} target="_blank">
+            {title}
+          </a>
         </h2>
         <a
           href="#"
