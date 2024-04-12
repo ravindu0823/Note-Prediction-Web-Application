@@ -1,70 +1,88 @@
+import { useMemo } from "react";
 import { ComplexNavbar } from "../components/NavBar";
+import getScrollAnimation from "../utils/getScrollAnimation";
+import { motion } from "framer-motion";
+import ScrollAnimationWrapper from "../components/ScrollAnimationWrapper";
 
 const AboutUs = () => {
+  const scrollAnimation = useMemo(() => getScrollAnimation(), []);
   return (
     <>
       <div className="bg-[url('https://klang.io/wp-content/uploads/2024/02/klangio_background_tinified.jpg')] bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply">
         <ComplexNavbar className="mx-auto max-w-screen-xl p-7" />
-        <div className="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-24">
-          <div className="text-center">
-            <img
-              className="object-contain w-auto mx-auto block"
-              src="https://flowbite.s3.amazonaws.com/brand/logo-dark/type/flowbite-logo.svg"
-              alt="Flowbite logo dark"
-            />
+        <div className="max-w-screen-xl px-4 py-8 mx-auto lg:px-6 sm:py-16 lg:py-10">
+          <ScrollAnimationWrapper>
+            <motion.div className="text-center" variants={scrollAnimation}>
+              <img
+                className="object-contain w-auto mx-auto block"
+                src="https://flowbite.s3.amazonaws.com/brand/logo-dark/type/flowbite-logo.svg"
+                alt="Flowbite logo dark"
+              />
 
-            <div className="flex flex-col items-center justify-center gap-4 mt-4 sm:mt-5 sm:gap-8 sm:flex-row">
-              <a
-                href="#"
-                title=""
-                className="inline-flex items-center text-base font-semibold leading-tight hover:underline text-primary-500"
-              >
-                Visit the website
-                <svg
-                  aria-hidden="true"
-                  className="w-4 h-4 ml-1.5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
+              <div className="flex flex-col items-center justify-center gap-4 mt-4 sm:mt-5 sm:gap-8 sm:flex-row">
+                <a
+                  href="#"
+                  title=""
+                  className="inline-flex items-center text-base font-semibold leading-tight hover:underline text-primary-500"
                 >
-                  <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                  <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-                </svg>
-              </a>
+                  Visit the website
+                  <svg
+                    aria-hidden="true"
+                    className="w-4 h-4 ml-1.5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                  </svg>
+                </a>
 
-              <a
-                href="#"
-                title=""
-                className="inline-flex items-center text-base font-semibold leading-tight hover:underline text-primary-500"
-              >
-                Let{"'"}s work together
-                <svg
-                  aria-hidden="true"
-                  className="w-4 h-4 ml-1.5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
+                <a
+                  href="#"
+                  title=""
+                  className="inline-flex items-center text-base font-semibold leading-tight hover:underline text-primary-500"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-              </a>
-            </div>
-          </div>
+                  Let{"'"}s work together
+                  <svg
+                    aria-hidden="true"
+                    className="w-4 h-4 ml-1.5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                </a>
+              </div>
+            </motion.div>
 
-          <div className="max-w-5xl mx-auto mt-8 lg:mt-16">
-            <img
-              className="w-full rounded-lg shadow-lg"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/computer-dark.png"
-              alt="Content image"
-            />
-          </div>
+            <motion.div
+              className="max-w-5xl mx-auto mt-8 lg:mt-16"
+              variants={scrollAnimation}
+              custom={{ duration: 3 }}
+            >
+              <img
+                className="w-full rounded-lg shadow-lg"
+                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/computer-dark.png"
+                alt="Content image"
+              />
+            </motion.div>
+          </ScrollAnimationWrapper>
 
           <div className="grid grid-cols-1 gap-8 mt-8 lg:gap-16 lg:grid-cols-2 lg:mt-16">
-            <div>
+            <motion.div
+              whileHover={{
+                scale: 1.05,
+                transition: {
+                  duration: 0.2,
+                },
+              }}
+            >
               <div>
                 <h3 className="text-2xl font-extrabold text-white">Overview</h3>
                 <p className="mt-2 text-lg font-normal text-gray-400">
@@ -221,10 +239,17 @@ const AboutUs = () => {
                   </span>
                 </li>
               </ul>
-            </div>
+            </motion.div>
 
             <div className="space-y-8">
-              <div>
+              <motion.div
+                whileHover={{
+                  scale: 1.05,
+                  transition: {
+                    duration: 0.2,
+                  },
+                }}
+              >
                 <h3 className="text-2xl font-extrabold text-white">
                   Background
                 </h3>
@@ -237,9 +262,16 @@ const AboutUs = () => {
                   vibes. It needed to show it was a strong brand moving in a new
                   direction - and it was heading there fast.
                 </p>
-              </div>
+              </motion.div>
 
-              <div>
+              <motion.div
+                whileHover={{
+                  scale: 1.05,
+                  transition: {
+                    duration: 0.2,
+                  },
+                }}
+              >
                 <h3 className="text-2xl font-extrabold text-white">
                   The challenge
                 </h3>
@@ -252,7 +284,7 @@ const AboutUs = () => {
                   to be to what it needed to be, meant that working
                   collaboratively was a must.
                 </p>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
