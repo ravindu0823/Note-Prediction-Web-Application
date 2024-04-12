@@ -12,7 +12,6 @@ import {
   Collapse,
 } from "@material-tailwind/react";
 import {
-  CubeTransparentIcon,
   UserCircleIcon,
   CodeBracketSquareIcon,
   ChevronDownIcon,
@@ -25,6 +24,7 @@ import musify_logo from "../assets/images/musify_logo.webp";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SignInContext } from "../contexts/SignInContext";
 import Cookies from "js-cookie";
+import propTypes from "prop-types";
 
 // profile menu component
 const profileMenuItems = [
@@ -130,7 +130,7 @@ function ProfileMenu() {
 // nav list component
 function NavList() {
   return (
-    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center ">
+    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row items-center mx-auto">
       {navListItems.map(({ label, icon, link }) => (
         <Typography
           key={label}
@@ -157,7 +157,11 @@ export function ComplexNavbar({ className }) {
   const [navbarColor, setNavbarColor] = useState("blue-gray");
 
   useEffect(() => {
-    if (location.pathname === "/" || location.pathname === "/feedback" || location.pathname === "/about") {
+    if (
+      location.pathname === "/" ||
+      location.pathname === "/feedback" ||
+      location.pathname === "/about"
+    ) {
       setNavbarColor("transparent");
     } else {
       setNavbarColor("blue-gray");
@@ -249,3 +253,7 @@ export function ComplexNavbar({ className }) {
     </Navbar>
   );
 }
+
+ComplexNavbar.propTypes = {
+  className: propTypes.string,
+};
