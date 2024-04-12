@@ -11,6 +11,128 @@ dotenv.config();
 const predictionRouter = express.Router();
 
 predictionRouter.post(
+  "/analyzeNotes/:userId",
+  upload.single("file"),
+  async (req, res) => {
+    // Access the file inside the uploads folder
+    const file = req.file;
+    const { userId } = req.params;
+    const songPath = file.path;
+    const songData = {
+      userId,
+      songPath,
+    };
+
+    // Pass the file to the Flask server
+    const formData = new FormData();
+    formData.append("song", fs.createReadStream(file.path), {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    try {
+      const response = await axios.post(
+        // "http://159.223.75.67:5000/analyzeBoth",
+        "http://localhost:5000/analyzeNotes",
+        formData
+      );
+
+      if (response.status !== 200) {
+        res.status(500).json("An error occurred while processing the file");
+      }
+
+      const { notes } = response.data;
+
+      const savedAudioFile = new Song(songData);
+
+      await savedAudioFile.save();
+
+      if (!savedAudioFile) {
+        res.status(500).json("An error occurred while saving the file");
+      }
+
+      const predictionData = {
+        userId,
+        songId: savedAudioFile._id,
+        notes,
+      };
+
+      const savedPrediction = new Prediction(predictionData);
+
+      await savedPrediction.save();
+      console.log(savedPrediction);
+
+      res.status(201).json(savedPrediction);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json(error.message);
+    }
+  }
+);
+
+predictionRouter.post(
+  "/analyzeChords/:userId",
+  upload.single("file"),
+  async (req, res) => {
+    // Access the file inside the uploads folder
+    const file = req.file;
+    const { userId } = req.params;
+    const songPath = file.path;
+    const songData = {
+      userId,
+      songPath,
+    };
+
+    // Pass the file to the Flask server
+    const formData = new FormData();
+    formData.append("song", fs.createReadStream(file.path), {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    try {
+      const response = await axios.post(
+        // "http://159.223.75.67:5000/analyzeBoth",
+        "http://localhost:5000/analyzeChords",
+        formData
+      );
+
+      if (response.status !== 200) {
+        res.status(500).json("An error occurred while processing the file");
+      }
+
+      const { chords } = response.data;
+
+      const savedAudioFile = new Song(songData);
+
+      await savedAudioFile.save();
+
+      if (!savedAudioFile) {
+        res.status(500).json("An error occurred while saving the file");
+      }
+
+      const predictionData = {
+        userId,
+        songId: savedAudioFile._id,
+        chords,
+      };
+
+      const savedPrediction = new Prediction(predictionData);
+
+      await savedPrediction.save();
+      console.log(savedPrediction);
+
+      res.status(201).json(savedPrediction);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json(error.message);
+    }
+  }
+);
+
+predictionRouter.post(
   "/analyzeBoth/:userId",
   upload.single("file"),
   async (req, res) => {
@@ -38,7 +160,8 @@ predictionRouter.post(
 
     try {
       const response = await axios.post(
-        "http://159.223.75.67:5000/analyzeBoth",
+        // "http://159.223.75.67:5000/analyzeBoth",
+        "http://localhost:5000/analyzeBoth",
         formData
       );
 
