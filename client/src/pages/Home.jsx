@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <>
       <div className="bg-[#111827] text-white">
-        <div className="bg-hero-image h-screen bg-cover">
+        <div className="bg-hero-image h-screen bg-no-repeat bg-cover bg-center bg-gray-400 bg-blend-multiply">
           <div className="mx-auto max-w-screen-xl">
             <ComplexNavbar className="p-7" />
             <Hero />
