@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,42 +17,44 @@ import {
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { Heading } from "@/components/ui/heading";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 // import FileUpload from "@/components/FileUpload";
 import { useToast } from "../ui/use-toast";
 import FileUpload from "../file-upload";
-const ImgSchema = z.object({
-  fileName: z.string(),
-  name: z.string(),
-  fileSize: z.number(),
-  size: z.number(),
-  fileKey: z.string(),
-  key: z.string(),
-  fileUrl: z.string(),
-  url: z.string(),
-});
+import axios, { CREATE_USER, DELETE_USER, UPDATE_USERS } from "@/axios/axios";
+import { AlertModal } from "../modal/alert-modal";
+
+
 export const IMG_MAX_LIMIT = 3;
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "Product Name must be at least 3 characters" }),
-  imgUrl: z
+const formSchema = z
+  .object({
+    _id: z.string().optional(),
+    username: z
+      .string()
+      .min(3, { message: "Username must be at least 3 characters" }),
+    fullName: z
+      .string()
+      .min(3, { message: "Full Name must be at least 3 characters" }),
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters" })
+      .optional(),
+    confirmPassword: z
+      .string()
+      .min(6, {
+        message: "Confirm Password must be at least 6 characters",
+      })
+      .optional(),
+
+    /* imgUrl: z
     .array(ImgSchema)
     .max(IMG_MAX_LIMIT, { message: "You can only add up to 3 images" })
-    .min(1, { message: "At least one image must be added." }),
-  description: z
-    .string()
-    .min(3, { message: "Product description must be at least 3 characters" }),
-  price: z.coerce.number(),
-  category: z.string().min(1, { message: "Please select a category" }),
-});
+    .min(1, { message: "At least one image must be added." }), */
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 type ProductFormValues = z.infer<typeof formSchema>;
 
@@ -64,17 +65,14 @@ interface ProductFormProps {
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialData,
-  categories,
 }) => {
-  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
-  const title = initialData ? "Edit product" : "Create product";
-  const description = initialData ? "Edit a product." : "Add a new product";
-  const toastMessage = initialData ? "Product updated." : "Product created.";
+  const title = initialData ? "Edit user" : "Create user";
+  const description = initialData ? "Edit user." : "Add a user";
   const action = initialData ? "Save changes" : "Create";
 
   const defaultValues = initialData
@@ -92,22 +90,57 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     defaultValues,
   });
 
-  const onSubmit = async (data: ProductFormValues) => {
+  const onSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+    data: ProductFormValues,
+  ) => {
+    e.preventDefault();
+
     try {
       setLoading(true);
       if (initialData) {
-        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
+        console.log(initialData._id);
+        console.log(data);
+
+        const userData = {
+          fullName: data.fullName,
+          email: data.email,
+        };
+        const response = await axios.put(`${UPDATE_USERS}/${initialData._id}`, {
+          userData,
+        });
+
+        if (response.status === 200) {
+          toast({
+            variant: "default",
+            title: "Success",
+            description: "User updated successfully.",
+          });
+
+          router.push(`/dashboard/user`);
+        }
       } else {
-        // const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
+        const userData = {
+          userName: data.username,
+          fullName: data.fullName,
+          email: data.email,
+          password: data.password,
+        };
+
+        console.log(userData);
+
+        const response = await axios.post(CREATE_USER, { userData });
+
+        if (response.status === 201) {
+          toast({
+            variant: "default",
+            title: "Success",
+            description: "User created successfully.",
+          });
+
+          router.push(`/dashboard/user`);
+        }
       }
-      router.refresh();
-      router.push(`/dashboard/products`);
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -122,26 +155,40 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      //   await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
-      router.refresh();
-      router.push(`/${params.storeId}/products`);
+
+      const response = await axios.delete(`${DELETE_USER}/${initialData._id}`);
+
+      if (response.status === 200) {
+        toast({
+          variant: "default",
+          title: "Success",
+          description: "User deleted.",
+        });
+      }
+      setLoading(false);
+      setOpen(false);
+
+      router.push(`/dashboard/user`);
     } catch (error: any) {
-    } finally {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
+
       setLoading(false);
       setOpen(false);
     }
   };
 
-  const triggerImgUrlValidation = () => form.trigger("imgUrl");
-
   return (
     <>
-      {/* <AlertModal
+      <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={loading}
-      /> */}
+      />
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
@@ -158,37 +205,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       <Separator />
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={(e) => form.handleSubmit((data) => onSubmit(e, data))(e)}
           className="space-y-8 w-full"
         >
-          <FormField
-            control={form.control}
-            name="imgUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Images</FormLabel>
-                <FormControl>
-                  <FileUpload
-                    onChange={field.onChange}
-                    value={field.value}
-                    onRemove={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="md:grid md:grid-cols-3 gap-8">
+          <div className="md:grid md:grid-cols-1 gap-8">
             <FormField
               control={form.control}
-              name="name"
+              name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={loading}
-                      placeholder="Product name"
+                      disabled={initialData}
+                      placeholder="Username"
+                      value={initialData ? initialData.username : field.value}
                       {...field}
                     />
                   </FormControl>
@@ -198,14 +229,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="description"
+              name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Full Name</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Product description"
+                      placeholder="Full Name"
+                      value={initialData ? initialData.fullName : field.value}
                       {...field}
                     />
                   </FormControl>
@@ -215,50 +247,66 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="price"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="number" disabled={loading} {...field} />
+                    <Input
+                      type="email"
+                      disabled={loading}
+                      placeholder="someone@email.com"
+                      value={initialData ? initialData.email : field.value}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a category"
+
+            {!initialData && (
+              <div className="md:grid md:grid-cols-2 gap-8">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          disabled={loading}
+                          placeholder="Password"
+                          value={field.value}
+                          {...field}
                         />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {/* @ts-ignore  */}
-                      {categories.map((category) => (
-                        <SelectItem key={category._id} value={category._id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          disabled={loading}
+                          placeholder="Confirm Password"
+                          value={field.value}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}
