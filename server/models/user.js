@@ -26,6 +26,10 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "Please enter password"],
   },
+  status: {
+    type: String,
+    default: "Active",
+  },
 });
 
 //  Hash the password
