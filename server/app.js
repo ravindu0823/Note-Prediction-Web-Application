@@ -5,12 +5,13 @@ import bodyParser from "body-parser";
 import userRouter from "./routes/users.js";
 import newsRouter from "./routes/news.js";
 import predictionRouter from "./routes/predicts.js";
+import adminRouter from "./routes/admins.js";
 
 dotenv.config();
 
 const app = express();
 const corsOptions = {
-  origin: ["http://localhost:5173"],
+  origin: ["http://localhost:5173", "http://localhost:5000"],
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -38,5 +39,6 @@ app.use(express.json());
 app.use("/users", userRouter);
 app.use("/news", newsRouter);
 app.use("/predict", predictionRouter);
+app.use("/admin", adminRouter);
 
 export default app;
