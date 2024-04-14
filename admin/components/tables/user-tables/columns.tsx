@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
 import { User } from "@/constants/data";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ReactNode } from "react";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -39,6 +40,14 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "status",
     header: "STATUS",
+    cell: ({ getValue }) => {
+      const status = getValue();
+      return (
+        <span className={status === "Active" ? "text-green-500" : "text-red-500"}>
+          {status as ReactNode}
+        </span>
+      );
+    },
   },
   {
     header: "ACTIONS",
