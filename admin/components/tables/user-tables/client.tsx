@@ -22,7 +22,7 @@ export const UserClient = () => {
     };
 
     getData();
-  }, []);
+  }, [router]);
 
   // console.log(userData);
 
@@ -35,7 +35,7 @@ export const UserClient = () => {
         />
         <Button
           className="text-xs md:text-sm"
-          onClick={() => router.push(`/dashboard/user/new`)}
+          onClick={() => router.push(`/dashboard/user/create`)}
         >
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
