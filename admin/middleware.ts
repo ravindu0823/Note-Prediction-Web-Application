@@ -6,12 +6,17 @@ import type { NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const token = cookies().get("token");
 
-  if (!token) {
+  // Redirect to the dashboard if the user is on the signin page and has a token
+  if (request.nextUrl.pathname === "/" && token) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (request.nextUrl.pathname.startsWith("/dashboard") && !token) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 }
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: "/dashboard/:path*",
+  matcher: ["/dashboard/:path*", "/"],
 };
