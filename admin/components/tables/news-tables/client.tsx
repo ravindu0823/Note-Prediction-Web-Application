@@ -36,7 +36,7 @@ export const NewsClient = () => {
         />
         <Button
           className="text-xs md:text-sm"
-          onClick={() => router.push(`/dashboard/news/new`)}
+          onClick={() => router.push(`/dashboard/news/create`)}
         >
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
