@@ -1,7 +1,7 @@
 "use client";
 import axios, { GET_ALL_USERS } from "@/axios/axios";
 import BreadCrumb from "@/components/breadcrumb";
-import { ProductForm } from "@/components/forms/product-form";
+import { UserForm } from "@/components/forms/product-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { User } from "@/constants/data";
 import { useParams } from "next/navigation";
@@ -31,7 +31,7 @@ export default function Page() {
       <div className="flex-1 space-y-4 p-5">
         <BreadCrumb items={breadcrumbItems} />
         {userData && (
-          <ProductForm
+          <UserForm
             categories={[
               { _id: "shirts", name: "shirts" },
               { _id: "pants", name: "pants" },
