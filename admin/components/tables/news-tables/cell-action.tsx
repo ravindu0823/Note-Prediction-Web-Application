@@ -1,4 +1,5 @@
 "use client";
+import axios, { DELETE_NEWS } from "@/axios/axios";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/use-toast";
 import { News } from "@/constants/data";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -22,7 +24,22 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => {
+    setLoading(true);
+
+    const response = await axios.delete(`${DELETE_NEWS}/${data._id}`);
+    if (response.status === 200) {
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "News deleted.",
+      });
+    }
+
+    setLoading(false);
+    setOpen(false);
+    router.push("/dashboard");
+  };
 
   return (
     <>
