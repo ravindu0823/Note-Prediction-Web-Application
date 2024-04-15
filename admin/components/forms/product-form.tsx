@@ -23,7 +23,6 @@ import FileUpload from "../file-upload";
 import axios, { CREATE_USER, DELETE_USER, UPDATE_USERS } from "@/axios/axios";
 import { AlertModal } from "../modal/alert-modal";
 
-
 export const IMG_MAX_LIMIT = 3;
 const formSchema = z
   .object({
@@ -60,12 +59,9 @@ type ProductFormValues = z.infer<typeof formSchema>;
 
 interface ProductFormProps {
   initialData: any | null;
-  categories: any;
 }
 
-export const ProductForm: React.FC<ProductFormProps> = ({
-  initialData,
-}) => {
+export const UserForm: React.FC<ProductFormProps> = ({ initialData }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
