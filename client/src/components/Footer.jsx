@@ -1,9 +1,11 @@
+import { useLocation } from "react-router-dom";
 import musify_logo from "../assets/images/musify_logo.webp";
 
 const Footer = () => {
+  const location = useLocation();
   return (
     <>
-      <footer className="p-4 py-8 md:p-8 lg:p-10 bg-[#111827]">
+      <footer className={`p-4 py-8 md:p-8 lg:p-10 bg-[#111827] `} hidden={location.pathname === "/login" || location.pathname === "/register"}>
         <div className="mx-auto max-w-screen-2xl text-center">
           <div className="grid lg:grid-cols-3">
             <a
