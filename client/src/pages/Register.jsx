@@ -8,11 +8,17 @@ import { validateUserRegisterData } from "../utils/UserDataValidation";
 import axios, { USER_REGISTER } from "../api/axios";
 import Cookies from "js-cookie";
 import { ReactToast } from "../utils/ReactToast";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 const Register = () => {
   const [userData, setUserData] = useState(UserData);
   const navigate = useNavigate();
   const { setLoggedIn } = useContext(SignInContext);
+  const [passwordShown, setPasswordShown] = useState(false);
+  const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
+  const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
+  const toggleConfirmPasswordVisiblity = () =>
+    setConfirmPasswordShown((cur) => !cur);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -43,200 +49,120 @@ const Register = () => {
   };
 
   return (
-    <>
-      <div className="relative min-h-screen w-full">
-        <section className="bg-hero-image bg-opacity-5 h-screen bg-cover flex pt-10">
-          <div className="w-full lg:w-3/5 mt-10">
-            <div className="text-center">
-              <Typography
-                placeholder={"sign in"}
-                variant="h2"
-                className="font-bold mb-4 text-white"
-              >
-                Sign Up
-              </Typography>
-              <Typography
-                placeholder={"enter your email and password"}
-                variant="paragraph"
-                color="blue-gray"
-                className="text-lg font-normal text-white"
-              >
-                Create your account to start using Musify.
-              </Typography>
-            </div>
-            <form
-              className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2"
-              onSubmit={handleRegister}
+    <div className="bg-[url('https://klang.io/wp-content/uploads/2024/02/klangio_background_tinified.jpg')] bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply bg-opacity-60">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen pt:mt-0">
+        <a
+          href="/"
+          className="flex items-center mb-6 text-2xl font-semibold text-white"
+        >
+          <img
+            className="w-24 h-24 mr-2 rounded-full"
+            src={musify_logo}
+            alt="logo"
+          />
+          Musify
+        </a>
+        <div className="w-full rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 bg-[#111827] border border-blue-600">
+          <div className="p-6 space-y-4 md:space-y-6 lg:space-y-8 sm:p-8">
+            <Typography
+              variant="h3"
+              className="text-xl font-bold leading-tight tracking-tight text-center md:text-2xl text-white"
             >
-              <div className="mb-1 flex flex-col gap-6">
-                <Typography
-                  placeholder={"full name label"}
-                  variant="small"
-                  color="blue-gray"
-                  className="-mb-3 text-lg font-bold text-white"
-                >
-                  Full Name
-                </Typography>
-                <Input
-                  size="lg"
-                  value={userData.fullName}
-                  onChange={(e) =>
-                    setUserData({ ...userData, fullName: e.target.value })
-                  }
-                  placeholder="John Doe"
-                  className=" !border-t-blue-gray-200 focus:!border-light-blue-700 text-white placeholder-white"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
-                />
-
-                <Typography
-                  placeholder={"username label"}
-                  variant="small"
-                  color="blue-gray"
-                  className="-mb-3 text-lg font-bold text-white"
-                >
-                  Username
-                </Typography>
-                <Input
-                  size="lg"
-                  value={userData.userName}
-                  onChange={(e) =>
-                    setUserData({ ...userData, userName: e.target.value })
-                  }
-                  placeholder="johndoe"
-                  className=" !border-t-blue-gray-200 focus:!border-light-blue-700 text-white placeholder-white"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
-                />
-
-                <Typography
-                  placeholder={"email label"}
-                  variant="small"
-                  color="blue-gray"
-                  className="-mb-3 text-lg font-bold text-white"
-                >
-                  Your email
-                </Typography>
-                <Input
-                  value={userData.email}
-                  onChange={(e) =>
-                    setUserData({ ...userData, email: e.target.value })
-                  }
-                  size="lg"
-                  placeholder="someone@example.com"
-                  className=" !border-t-blue-gray-200 focus:!border-light-blue-700 text-white placeholder-white"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
-                />
-
-                <Typography
-                  placeholder={"password label"}
-                  variant="small"
-                  color="blue-gray"
-                  className="-mb-3 text-lg font-bold text-white"
-                >
-                  Password
-                </Typography>
-                <Input
-                  value={userData.password}
-                  onChange={(e) =>
-                    setUserData({ ...userData, password: e.target.value })
-                  }
-                  type="password"
-                  size="lg"
-                  placeholder="********"
-                  className=" !border-t-blue-gray-200 focus:!border-light-blue-700 text-white placeholder-white"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
-                />
-
-                <Typography
-                  placeholder={"confirm password label"}
-                  variant="small"
-                  color="blue-gray"
-                  className="-mb-3 text-lg font-bold text-white"
-                >
-                  Confirm Password
-                </Typography>
-                <Input
-                  value={userData.confirmPassword}
-                  onChange={(e) =>
-                    setUserData({
-                      ...userData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                  type="password"
-                  size="lg"
-                  placeholder="********"
-                  className=" !border-t-blue-gray-200 focus:!border-light-blue-700 text-white placeholder-white"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
-                />
-              </div>
-              <Checkbox
-                value={userData.check}
+              Create an Account
+            </Typography>
+            <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
+              <Input
+                label="Full Name"
+                color="white"
+                size="lg"
+                value={userData.fullName}
                 onChange={(e) =>
-                  setUserData({ ...userData, check: e.target.checked })
+                  setUserData({ ...userData, fullName: e.target.value })
                 }
-                className="checked:bg-light-blue-700 checked:border-white"
-                label={
-                  <Typography
-                    placeholder={"terms and conditions"}
-                    variant="small"
-                    color="gray"
-                    className="flex items-center justify-start font-medium text-white"
-                  >
-                    I agree the&nbsp;
-                    <a
-                      href="#"
-                      className="font-normal text-white transition-colors hover:text-light-blue-700 underline"
-                    >
-                      Terms and Conditions
-                    </a>
-                  </Typography>
-                }
-                containerProps={{ className: "-ml-2.5" }}
               />
+
+              <Input
+                label="Email Address"
+                color="white"
+                size="lg"
+                value={userData.email}
+                onChange={(e) =>
+                  setUserData({ ...userData, email: e.target.value })
+                }
+              />
+
+              <Input
+                label="Username"
+                color="white"
+                size="lg"
+                value={userData.userName}
+                onChange={(e) =>
+                  setUserData({ ...userData, userName: e.target.value })
+                }
+              />
+
+              <Input
+                type={passwordShown ? "text" : "password"}
+                label="Password"
+                color="white"
+                size="lg"
+                value={userData.password}
+                onChange={(e) =>
+                  setUserData({ ...userData, password: e.target.value })
+                }
+                icon={
+                  <i onClick={togglePasswordVisiblity}>
+                    {passwordShown ? (
+                      <EyeIcon className="h-5 w-5 fill-white" />
+                    ) : (
+                      <EyeSlashIcon className="h-5 w-5 fill-white" />
+                    )}
+                  </i>
+                }
+              />
+
+              <Input
+                type={confirmPasswordShown ? "text" : "password"}
+                label="Confirm Password"
+                color="white"
+                size="lg"
+                value={userData.confirmPassword}
+                onChange={(e) =>
+                  setUserData({
+                    ...userData,
+                    confirmPassword: e.target.value,
+                  })
+                }
+                icon={
+                  <i onClick={toggleConfirmPasswordVisiblity}>
+                    {confirmPasswordShown ? (
+                      <EyeIcon className="h-5 w-5 fill-white" />
+                    ) : (
+                      <EyeSlashIcon className="h-5 w-5 fill-white" />
+                    )}
+                  </i>
+                }
+              />
+
               <Button
                 type="submit"
-                placeholder={"button sign in"}
-                className="mt-6 bg-light-blue-700 hover:bg-light-blue-900"
-                fullWidth
+                className="w-full text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-primary-600 hover:bg-primary-700 focus:ring-primary-800"
               >
-                Sign Up
+                Create An Account
               </Button>
-
-              <Typography
-                placeholder={"not registered"}
-                variant="paragraph"
-                className="text-center text-white text-lg font-bold mt-4"
-              >
-                Already have an account?&nbsp;
-                <Link
-                  to="/login"
-                  className="text-white text-lg font-bold ml-1 hover:text-light-blue-700"
+              <p className="text-sm font-light text-center text-gray-300">
+                <a
+                  href="/login"
+                  className="font-medium hover:underline text-primary-500"
                 >
-                  Log In
-                </Link>
-              </Typography>
+                  Already have an account?
+                </a>
+              </p>
             </form>
           </div>
-          <div className="w-2/5 h-full hidden lg:block mr-36">
-            <img
-              src={musify_logo}
-              className="mx-auto mt-24 w-fit rounded-full object-cover"
-              width={400}
-            />
-          </div>
-        </section>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
