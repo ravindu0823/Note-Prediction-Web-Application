@@ -9,11 +9,14 @@ import Cookies from "js-cookie";
 import { ReactToast } from "../utils/ReactToast";
 import { validateUserLoginData } from "../utils/UserDataValidation";
 import { SignInContext } from "../contexts/SignInContext";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 const Login = () => {
   const [userData, setUserData] = useState(UserData);
   const navigate = useNavigate();
   const { setLoggedIn } = useContext(SignInContext);
+  const [passwordShown, setPasswordShown] = useState(false);
+  const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -45,106 +48,76 @@ const Login = () => {
 
   return (
     <>
-      <div className="relative min-h-screen w-full">
-        <section className="bg-hero-image h-screen bg-cover flex pt-10">
-          <div className="w-full lg:w-3/5 mt-24">
-            <div className="text-center">
+      <div className="bg-[url('https://klang.io/wp-content/uploads/2024/02/klangio_background_tinified.jpg')] bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply bg-opacity-60">
+        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen pt:mt-0">
+          <a
+            href="/"
+            className="flex items-center mb-6 text-2xl font-semibold text-white"
+          >
+            <img
+              className="w-24 h-24 mr-2 rounded-full"
+              src={musify_logo}
+              alt="logo"
+            />
+            Musify
+          </a>
+          <div className="w-full rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 bg-[#111827] border border-blue-600">
+            <div className="p-6 space-y-4 md:space-y-6 lg:space-y-8 sm:p-8">
               <Typography
-                placeholder={"sign in"}
-                variant="h2"
-                className="font-bold mb-4 text-white"
+                variant="h3"
+                className="text-xl font-bold leading-tight tracking-tight text-center md:text-2xl text-white"
               >
-                Sign In
+                Sign in to your account
               </Typography>
-              <Typography
-                placeholder={"enter your email and password"}
-                variant="paragraph"
-                color="blue-gray"
-                className="text-lg font-normal text-white"
-              >
-                Enter your email and password to Sign In.
-              </Typography>
-            </div>
-            <form
-              onSubmit={handleLogin}
-              className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2"
-            >
-              <div className="mb-1 flex flex-col gap-6">
-                <Typography
-                  placeholder={"username label"}
-                  variant="small"
-                  color="blue-gray"
-                  className="-mb-3 text-lg font-bold text-white"
-                >
-                  Username
-                </Typography>
+              <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
                 <Input
+                  label="Username"
+                  color="white"
+                  size="lg"
                   value={userData.userName}
                   onChange={(e) =>
                     setUserData({ ...userData, userName: e.target.value })
                   }
-                  size="lg"
-                  placeholder="johndoe"
-                  className=" !border-t-blue-gray-200 focus:!border-light-blue-700 text-white placeholder-white"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
                 />
-                <Typography
-                  placeholder={"password label"}
-                  variant="small"
-                  color="blue-gray"
-                  className="-mb-3 text-lg font-bold text-white"
-                >
-                  Password
-                </Typography>
+
                 <Input
+                  type={passwordShown ? "text" : "password"}
+                  label="Password"
+                  color="white"
+                  size="lg"
                   value={userData.password}
                   onChange={(e) =>
                     setUserData({ ...userData, password: e.target.value })
                   }
-                  type="password"
-                  size="lg"
-                  placeholder="********"
-                  className=" !border-t-blue-gray-200 focus:!border-light-blue-700 text-white placeholder-white"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
+                  icon={
+                    <i onClick={togglePasswordVisiblity}>
+                      {passwordShown ? (
+                        <EyeIcon className="h-5 w-5 fill-white" />
+                      ) : (
+                        <EyeSlashIcon className="h-5 w-5 fill-white" />
+                      )}
+                    </i>
+                  }
                 />
-              </div>
 
-              <Button
-                type="submit"
-                placeholder={"button sign in"}
-                className="mt-10 bg-light-blue-700 hover:bg-light-blue-900"
-                fullWidth
-              >
-                Sign In
-              </Button>
-
-              <Typography
-                placeholder={"not registered"}
-                variant="paragraph"
-                className="text-center text-white text-lg font-bold mt-4"
-              >
-                Not registered?
-                <Link
-                  to="/register"
-                  className="text-white text-lg font-bold ml-1 hover:text-light-blue-700"
+                <Button
+                  type="submit"
+                  className="w-full text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-primary-600 hover:bg-primary-700 focus:ring-primary-800"
                 >
-                  Create account
-                </Link>
-              </Typography>
-            </form>
+                  Log in to your account
+                </Button>
+                <p className="text-sm font-light text-center text-gray-300">
+                  <a
+                    href="/register"
+                    className="font-medium hover:underline text-primary-500"
+                  >
+                    Don{"'"}t have an account?
+                  </a>
+                </p>
+              </form>
+            </div>
           </div>
-          <div className="w-2/5 h-full hidden lg:block mr-36">
-            <img
-              src={musify_logo}
-              className="mx-auto mt-24 w-fit rounded-full object-cover"
-              width={400}
-            />
-          </div>
-        </section>
+        </div>
       </div>
     </>
   );
