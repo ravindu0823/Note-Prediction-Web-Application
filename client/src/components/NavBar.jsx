@@ -26,19 +26,6 @@ import { SignInContext } from "../contexts/SignInContext";
 import Cookies from "js-cookie";
 import propTypes from "prop-types";
 
-// profile menu component
-const profileMenuItems = [
-  {
-    label: "Dashboard",
-    icon: UserCircleIcon,
-  },
-
-  {
-    label: "Sign Out",
-    icon: PowerIcon,
-  },
-];
-
 const navListItems = [
   {
     label: "Home",
@@ -62,9 +49,8 @@ const navListItems = [
   },
 ];
 
-function ProfileMenu() {
+function ProfileMenu({ profileMenuItems }) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
@@ -93,13 +79,13 @@ function ProfileMenu() {
       </MenuHandler>
 
       <MenuList className="p-1" placeholder={true}>
-        {profileMenuItems.map(({ label, icon }, key) => {
+        {profileMenuItems.map(({ label, icon, onclick }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
           return (
             <MenuItem
               placeholder={"true"}
               key={label}
-              onClick={closeMenu}
+              onClick={onclick}
               className={`flex items-center gap-2 rounded ${
                 isLastItem
                   ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
@@ -126,6 +112,10 @@ function ProfileMenu() {
     </Menu>
   );
 }
+
+ProfileMenu.propTypes = {
+  profileMenuItems: propTypes.array.isRequired,
+};
 
 // nav list component
 function NavList() {
@@ -170,13 +160,27 @@ export function ComplexNavbar({ className }) {
 
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
 
-  const logout = () => {
-    Cookies.remove("token");
-    setLoggedIn(false);
-    navigate(0);
-  };
+  const profileMenuItems = [
+    {
+      label: "Dashboard",
+      icon: UserCircleIcon,
+      onclick: () => {
+        console.log("Dashboard");
+      },
+    },
 
-  React.useEffect(() => {
+    {
+      label: "Sign Out",
+      icon: PowerIcon,
+      onclick: () => {
+        Cookies.remove("token");
+        setLoggedIn(false);
+        navigate(0);
+      },
+    },
+  ];
+
+  useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setIsNavOpen(false)
@@ -221,7 +225,7 @@ export function ComplexNavbar({ className }) {
 
         <div className="flex items-center">
           {loggedIn ? (
-            <ProfileMenu />
+            <ProfileMenu profileMenuItems={profileMenuItems} />
           ) : (
             <Button
               variant="text"
