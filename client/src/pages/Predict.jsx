@@ -3,19 +3,23 @@ import { useWavesurfer } from "@wavesurfer/react";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
 import Timeline from "wavesurfer.js/dist/plugins/timeline.esm.js";
 import { ComplexNavbar } from "../components/NavBar";
-import { Button } from "@material-tailwind/react";
+import { Button, Radio } from "@material-tailwind/react";
 import { CantHelpFallingInLove } from "../assets/audio";
-import axios, { ANALYZE_CHORDS } from "../api/axios";
+import axios, { ANALYZE_CHORDS, ANALYZE_NOTES } from "../api/axios";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const Predict = () => {
   const containerRef = useRef();
-
   const [file, setFile] = useState(null);
-  const [chords, setChords] = useState([]);
+  const [isComplete, setIsComplete] = useState(false);
   const random = (min, max) => Math.random() * (max - min) + min;
+  const [selectedMethod, setSelectedMethod] = useState(0); // State variable for selected radio button
+
   const randomColor = () =>
     `rgba(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)}, 0.5)`;
 
+  // Create a region
   const createRegion = (start, end, content) => {
     return {
       start,
@@ -27,6 +31,7 @@ const Predict = () => {
     };
   };
 
+  // Create a region marker
   const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
     url: CantHelpFallingInLove,
@@ -39,6 +44,7 @@ const Predict = () => {
     plugins: useMemo(() => [Timeline.create(), RegionsPlugin.create()], []),
   });
 
+  // Add region marker when axios request is successful
   const addRegionMarkerLive = (chords) => {
     console.log("This is the chords", chords);
     const regions = wavesurfer.registerPlugin(RegionsPlugin.create());
@@ -48,10 +54,12 @@ const Predict = () => {
     });
   };
 
+  // Function to play and pause audio
   const onPlayPause = () => {
     wavesurfer && wavesurfer.playPause();
   };
 
+  // Function to stop audio
   const onStop = () => {
     wavesurfer && wavesurfer.stop();
   };
@@ -65,37 +73,79 @@ const Predict = () => {
     }
   }, [isReady, wavesurfer]); */
 
+  // Function to handle file change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setFile(file);
   };
 
-  const handleSubmit = (e) => {
+  // Function to handle radio button change
+  const handleMethodChange = (e) => {
+    setSelectedMethod(parseInt(e.target.value)); // Convert value to integer
+  };
+
+  // Function to handle form submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("file", file);
 
-    axios
-      .post(`${ANALYZE_CHORDS}/65d17b95d050a94bb64d8cbf`, formData)
-      .then((res) => {
-        console.log(res.data);
-        const { chords } = res.data;
-        setChords(chords);
+    const token = Cookies.get("token");
+    const decodedToken = jwtDecode(token);
+    const { userId } = decodedToken;
 
-        const fileURL = URL.createObjectURL(file);
+    if (selectedMethod === 0) {
+      const response = await axios.post(
+        `${ANALYZE_CHORDS}/${userId}`,
+        formData
+      );
 
-        if (wavesurfer && file) {
-          wavesurfer.load(fileURL);
-          wavesurfer.on("ready", () => {
-            // wavesurfer.play();
-            addRegionMarkerLive(chords);
-            console.log("done");
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      // TODO: NEED TO REMAKE THIS
+      if (response.status != 201) {
+        console.log("Error");
+        return;
+      }
+
+      console.log(response.data);
+      const { chords } = response.data;
+
+      const fileURL = URL.createObjectURL(file);
+
+      if (wavesurfer && file) {
+        wavesurfer.load(fileURL);
+        wavesurfer.on("ready", () => {
+          // wavesurfer.play();
+          addRegionMarkerLive(chords);
+          console.log("done");
+          setIsComplete(true);
+        });
+      }
+    }
+
+    if (selectedMethod === 1) {
+      const response = await axios.post(`${ANALYZE_NOTES}/${userId}`, formData);
+
+      // TODO: NEED TO REMAKE THIS
+      if (response.status != 201) {
+        console.log("Error");
+        return;
+      }
+
+      console.log(response.data);
+      const { notes } = response.data;
+
+      const fileURL = URL.createObjectURL(file);
+
+      if (wavesurfer && file) {
+        wavesurfer.load(fileURL);
+        wavesurfer.on("ready", () => {
+          // wavesurfer.play();
+          addRegionMarkerLive(notes);
+          console.log("done");
+          setIsComplete(true);
+        });
+      }
+    }
   };
 
   return (
@@ -159,6 +209,30 @@ const Predict = () => {
                 </div>
               </div>
 
+              <div className="flex justify-center gap-10 mx-auto mb-5">
+                <Radio
+                  name="method"
+                  label="Chords Only"
+                  value={0}
+                  onChange={handleMethodChange}
+                  checked={selectedMethod === 0} // Check if this radio button is selected
+                />
+                <Radio
+                  name="method"
+                  label="Notes Only"
+                  value={1}
+                  onChange={handleMethodChange}
+                  checked={selectedMethod === 1} // Check if this radio button is selected
+                />
+                <Radio
+                  name="method"
+                  label="Both"
+                  value={2}
+                  onChange={handleMethodChange}
+                  checked={selectedMethod === 2} // Check if this radio button is selected
+                />
+              </div>
+
               <div>
                 <Button
                   className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
@@ -173,8 +247,11 @@ const Predict = () => {
         </div>
 
         <div
-          className={`mx-auto max-w-screen-2xl ${file ? `block` : `hidden`}`}
+          className={`mx-auto max-w-screen-2xl ${
+            isComplete ? `block` : `hidden`
+          }`}
         >
+          <div>Chord Data</div>
           <div ref={containerRef} className="mt-10" />
 
           <Button onClick={onPlayPause} color="blue" className="m-5">
