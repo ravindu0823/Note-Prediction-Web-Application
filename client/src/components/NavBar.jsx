@@ -3,119 +3,24 @@ import {
   Navbar,
   Typography,
   Button,
-  Menu,
-  MenuHandler,
-  MenuList,
   MenuItem,
-  Avatar,
   IconButton,
   Collapse,
 } from "@material-tailwind/react";
 import {
   UserCircleIcon,
-  CodeBracketSquareIcon,
-  ChevronDownIcon,
   PowerIcon,
   Bars2Icon,
-  HomeIcon,
-  PhoneIcon,
 } from "@heroicons/react/24/solid";
 import musify_logo from "../assets/images/musify_logo.webp";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SignInContext } from "../contexts/SignInContext";
 import Cookies from "js-cookie";
 import propTypes from "prop-types";
-
-const navListItems = [
-  {
-    label: "Home",
-    icon: HomeIcon,
-    link: "/",
-  },
-  {
-    label: "Articles",
-    icon: UserCircleIcon,
-    link: "/articles",
-  },
-  {
-    label: "About Us",
-    icon: CodeBracketSquareIcon,
-    link: "/about",
-  },
-  {
-    label: "Contact Us",
-    icon: PhoneIcon,
-    link: "/feedback",
-  },
-];
-
-function ProfileMenu({ profileMenuItems }) {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
-  return (
-    <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
-      <MenuHandler>
-        <Button
-          variant="text"
-          placeholder={true}
-          color="blue-gray"
-          className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
-        >
-          <Avatar
-            variant="circular"
-            size="sm"
-            placeholder={true}
-            alt="tania andrew"
-            className="border border-gray-900 p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-          />
-          <ChevronDownIcon
-            strokeWidth={2.5}
-            className={`h-3 w-3 transition-transform ${
-              isMenuOpen ? "rotate-180" : ""
-            }`}
-          />
-        </Button>
-      </MenuHandler>
-
-      <MenuList className="p-1" placeholder={true}>
-        {profileMenuItems.map(({ label, icon, onclick }, key) => {
-          const isLastItem = key === profileMenuItems.length - 1;
-          return (
-            <MenuItem
-              placeholder={"true"}
-              key={label}
-              onClick={onclick}
-              className={`flex items-center gap-2 rounded ${
-                isLastItem
-                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                  : ""
-              }`}
-            >
-              {React.createElement(icon, {
-                className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
-                strokeWidth: 2,
-              })}
-              <Typography
-                placeholder={"true"}
-                as="span"
-                variant="small"
-                className="font-normal"
-                color={isLastItem ? "red" : "inherit"}
-              >
-                {label}
-              </Typography>
-            </MenuItem>
-          );
-        })}
-      </MenuList>
-    </Menu>
-  );
-}
-
-ProfileMenu.propTypes = {
-  profileMenuItems: propTypes.array.isRequired,
-};
+import axios, { USER_VALIDATE } from "../api/axios";
+import { navListItems } from "../utils/NavData";
+import ProfileMenu from "./ProfileMenu";
+import { ReactToast } from "../utils/ReactToast";
 
 // nav list component
 function NavList() {
@@ -144,9 +49,36 @@ export function ComplexNavbar({ className }) {
   const navigate = useNavigate();
   const { loggedIn, setLoggedIn } = useContext(SignInContext);
   const location = useLocation();
-  const [navbarColor, setNavbarColor] = useState("blue-gray");
+  const [navbarColor, setNavbarColor] = useState("transparent");
+
+  if (Cookies.get("token")) {
+    setLoggedIn(true);
+  }
 
   useEffect(() => {
+    const getUserData = async () => {
+      const token = Cookies.get("token");
+
+      if (!token) setLoggedIn(false);
+
+      try {
+        const res = await axios.get(USER_VALIDATE, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.statusText) setLoggedIn(false);
+      } catch (error) {
+        console.error(error);
+        setLoggedIn(false);
+      }
+    };
+
+    getUserData();
+  }, [navigate, setLoggedIn]);
+
+  /* useEffect(() => {
     if (
       location.pathname === "/" ||
       location.pathname === "/feedback" ||
@@ -156,7 +88,7 @@ export function ComplexNavbar({ className }) {
     } else {
       setNavbarColor("blue-gray");
     }
-  }, [location.pathname]);
+  }, [location.pathname]); */
 
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
 
@@ -175,6 +107,7 @@ export function ComplexNavbar({ className }) {
       onclick: () => {
         Cookies.remove("token");
         setLoggedIn(false);
+        ReactToast("Logged out successfully", "success");
         navigate(0);
       },
     },
@@ -191,23 +124,23 @@ export function ComplexNavbar({ className }) {
   return (
     <Navbar className={className} color={navbarColor} placeholder={"true"}>
       <div className="relative mx-auto flex items-center text-white font-bold">
-        <img
-          src={musify_logo}
-          alt="Musify Logo"
-          className="rounded-full"
-          width={70}
-          height={70}
-        />
         <Typography
           placeholder={"true"}
           as="a"
-          href="#"
-          className="mr-4 ml-2 cursor-pointer py-1.5 font-bold lg:flex-1 hidden lg:block md:block text-xl gap-3 mx-5"
+          href="/"
+          className="mr-4 ml-2 cursor-pointer py-1.5 font-bold flex-1 flex lg:flex items-center md:block text-xl gap-3 mx-5"
         >
+          <img
+            src={musify_logo}
+            alt="Musify Logo"
+            className="rounded-full"
+            width={70}
+            height={70}
+          />
           Musify
         </Typography>
 
-        <div className="hidden lg:flex lg:mr-16">
+        <div className={`hidden lg:flex ${loggedIn ? `lg:mr-24` : `lg:mr-14`}`}>
           <NavList />
         </div>
 
@@ -215,10 +148,10 @@ export function ComplexNavbar({ className }) {
         <IconButton
           placeholder={"place"}
           size="sm"
-          color="blue-gray"
+          color="white"
           variant="text"
           onClick={toggleIsNavOpen}
-          className="ml-auto lg:hidden"
+          className="ml-auto lg:hidden mr-5"
         >
           <Bars2Icon className="h-6 w-6" />
         </IconButton>
@@ -240,11 +173,11 @@ export function ComplexNavbar({ className }) {
           )}
 
           <Button
-            variant="text"
+            variant="filled"
             size="lg"
-            color="white"
-            className="mr-2 bg-light-blue-700 rounded-full ms-7 hidden lg:block"
-            placeholder={"get started"}
+            color="light-blue"
+            className="mr-2 rounded-full ms-7 hidden lg:block"
+            placeholder={"Get Started"}
             onClick={() => navigate("/predict")}
           >
             <span>Get Started</span>
