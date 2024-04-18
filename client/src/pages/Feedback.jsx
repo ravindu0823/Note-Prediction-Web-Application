@@ -3,6 +3,7 @@ import { ComplexNavbar } from "../components/NavBar";
 import getScrollAnimation from "../utils/getScrollAnimation";
 import ScrollAnimationWrapper from "../components/ScrollAnimationWrapper";
 import { motion } from "framer-motion";
+import { Button, IconButton, Input, Textarea } from "@material-tailwind/react";
 
 const Feedback = () => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
@@ -30,106 +31,78 @@ const Feedback = () => {
         <div className="px-4 mx-auto -mt-[675px] max-w-screen-xl sm:py-24 lg:px-6 ">
           <ScrollAnimationWrapper>
             <motion.form
-              className="grid grid-cols-1 gap-8 p-6 mx-auto mb-16 max-w-screen-md rounded-lg border shadow-sm lg:mb-28 bg-[#111827] border-gray-700 sm:grid-cols-2"
+              className="grid grid-cols-1 gap-x-10 gap-y-10 p-6 mx-auto mb-16 max-w-screen-md rounded-lg border shadow-sm lg:mb-28 bg-[#111827] border-blue-500 sm:grid-cols-2"
               variants={scrollAnimation}
               custom={{ duration: 3 }}
             >
+              <Input
+                type="text"
+                label="First name"
+                color="white"
+                size="lg"
+                /* value={userData.fullName}
+                onChange={(e) =>
+                  setUserData({ ...userData, fullName: e.target.value })
+                } */
+              />
+              <Input
+                type="text"
+                label="Last name"
+                color="white"
+                size="lg"
+                /* value={userData.fullName}
+                onChange={(e) =>
+                  setUserData({ ...userData, fullName: e.target.value })
+                } */
+              />
+              <Input
+                type="email"
+                label="Email address"
+                color="white"
+                size="lg"
+                /* value={userData.fullName}
+                onChange={(e) =>
+                  setUserData({ ...userData, fullName: e.target.value })
+                } */
+              />
               <div>
-                <label
-                  htmlFor="first-name"
-                  className="block mb-2 text-sm font-medium text-gray-300"
-                >
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  id="first-name"
-                  className="block p-3 w-full text-sm rounded-lg border shadow-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-primary-500 focus:border-primary-500 shadow-sm-light"
-                  placeholder="Bonnie"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="last-name"
-                  className="block mb-2 text-sm font-medium text-gray-300"
-                >
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  id="last-name"
-                  className="block p-3 w-full text-sm rounded-lg border shadow-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-primary-500 focus:border-primary-500 shadow-sm-light"
-                  placeholder="Green"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-300"
-                >
-                  Your email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="block p-3 w-full text-sm rounded-lg border shadow-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-primary-500 focus:border-primary-500 shadow-sm-light"
-                  placeholder="name@flowbite.com"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="phone-number"
-                  className="block mb-2 text-sm font-medium text-gray-300"
-                >
-                  Phone Number
-                </label>
-                <input
+                <Input
                   type="tel"
-                  id="phone-number"
-                  className="block p-3 w-full text-sm rounded-lg border shadow-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-primary-500 focus:border-primary-500 shadow-sm-light"
-                  placeholder="+12 345 6789"
-                  required
+                  label="Phone number"
+                  color="white"
+                  size="lg"
+                  /* value={userData.fullName}
+                onChange={(e) =>
+                  setUserData({ ...userData, fullName: e.target.value })
+                } */
                 />
               </div>
               <div className="sm:col-span-2">
-                <label
-                  htmlFor="message"
-                  className="block mb-2 text-sm font-medium text-gray-300"
-                >
-                  Your message
-                </label>
-                <textarea
-                  id="message"
-                  rows="6"
-                  className="block p-3 w-full text-sm rounded-lg border shadow-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-primary-500 focus:border-primary-500 shadow-sm-light"
-                  placeholder="Leave a comment..."
-                ></textarea>
-                <p className="mt-4 text-sm text-gray-500">
-                  By submitting this form you agree to our{" "}
-                  <a href="#" className="hover:underline text-primary-500">
-                    terms and conditions
-                  </a>{" "}
-                  and our{" "}
-                  <a href="#" className="hover:underline text-primary-500">
-                    privacy policy
-                  </a>{" "}
-                  which explains how we may collect, use and disclose your
-                  personal information including to third parties.
-                </p>
+                <div className="relative w-full">
+                  <Textarea
+                    variant="outlined"
+                    className="text-white"
+                    label="Your Comment"
+                    rows={8}
+                    color="cyan"
+                  />
+                  <div className="flex w-full justify-between py-1.5">
+                    <div className="flex gap-2">
+                      <Button
+                        size="md"
+                        className="rounded-md mt-5"
+                        color="blue"
+                      >
+                        Post Comment
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <button
-                type="submit"
-                className="py-3 px-5 text-sm font-medium text-center text-white rounded-lg sm:w-fit focus:ring-4 focus:outline-none bg-primary-600 hover:bg-primary-700 focus:ring-primary-800"
-              >
-                Send message
-              </button>
             </motion.form>
           </ScrollAnimationWrapper>
           <ScrollAnimationWrapper>
-            <div className="space-y-8 text-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
+            <div className="space-y-8 text-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0 pt-20">
               <motion.div
                 whileHover={{
                   scale: 1.1,
@@ -154,12 +127,15 @@ const Feedback = () => {
                   Email us for general queries, including marketing and
                   partnership opportunities.
                 </p>
-                <a
+                <Button
                   href="mailto:abc@example.com"
-                  className="font-semibold text-primary-500 hover:underline"
+                  className="font-semibold text-primary-500 hover:underline lowercase text-base"
+                  variant="outlined"
+                  color="blue"
+                  size="sm"
                 >
                   hello@flowbite.com
-                </a>
+                </Button>
               </motion.div>
               <motion.div
                 whileHover={{
@@ -184,9 +160,14 @@ const Feedback = () => {
                   Call us to speak to a member of our team. We are always happy
                   to help.
                 </p>
-                <span className="font-semibold text-primary-500">
+                <Button
+                  variant="outlined"
+                  color="blue"
+                  size="sm"
+                  className="font-semibold text-primary-500 text-base"
+                >
                   +1 (646) 786-5060
-                </span>
+                </Button>
               </motion.div>
               <motion.div
                 whileHover={{
@@ -215,12 +196,14 @@ const Feedback = () => {
                   Email us for general queries, including marketing and
                   partnership opportunities.
                 </p>
-                <a
-                  href="#"
+                <Button
+                  variant="outlined"
+                  color="blue"
+                  size="sm"
                   className="inline-flex py-2 px-4 text-sm font-medium text-center rounded-lg border text-primary-600 border-primary-600 hover:text-white hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:border-primary-500 dark:text-primary-500 dark:hover:text-white dark:hover:bg-primary-600 dark:focus:ring-primary-800"
                 >
                   Support center
-                </a>
+                </Button>
               </motion.div>
             </div>
           </ScrollAnimationWrapper>
