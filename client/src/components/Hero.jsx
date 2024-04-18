@@ -3,9 +3,11 @@ import getScrollAnimation from "../utils/getScrollAnimation";
 import ScrollAnimationWrapper from "./ScrollAnimationWrapper";
 import ButtonPrimary from "./ButtonPrimary";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -24,7 +26,10 @@ const Hero = () => {
                 your favorite songs to sheet music using Artificial intelligence
                 and Machine Learning.
               </p>
-              <ButtonPrimary addClass="mt-5 text-white">
+              <ButtonPrimary
+                addClass="mt-5 text-white"
+                onClick={() => navigate("/predict")}
+              >
                 Get Started
               </ButtonPrimary>
             </div>
