@@ -1,9 +1,9 @@
 import { Button, Input, Typography } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import musify_logo from "../assets/images/musify_logo.webp";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserData } from "../models/User";
-import axios from "../api/axios";
+import axios, { USER_VALIDATE } from "../api/axios";
 import { USER_LOGIN } from "../api/axios";
 import Cookies from "js-cookie";
 import { ReactToast } from "../utils/ReactToast";
@@ -17,6 +17,29 @@ const Login = () => {
   const { setLoggedIn } = useContext(SignInContext);
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const token = Cookies.get("token");
+
+      if (token) {
+        try {
+          const res = await axios.get(USER_VALIDATE, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (res.statusText) navigate("/");
+        } catch (error) {
+          console.error(error);
+          setLoggedIn(false);
+        }
+      }
+    };
+
+    getUserData();
+  }, [navigate, setLoggedIn]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
