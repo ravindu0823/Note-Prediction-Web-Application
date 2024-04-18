@@ -8,7 +8,8 @@ export default withMt({
   theme: {
     extend: {
       backgroundImage: {
-        "hero-image": "url('./assets/images/bg-image.webp')",
+        "hero-image": "url('./assets/images/predict_1.webp')",
+        "predict-bg-image": "url('./assets/images/predict_2.webp')",
       },
       colors: {
         primary: {
