@@ -1,25 +1,42 @@
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, useContext } from "react";
 import { useWavesurfer } from "@wavesurfer/react";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
 import Timeline from "wavesurfer.js/dist/plugins/timeline.esm.js";
 import { ComplexNavbar } from "../components/NavBar";
-import { Button, Radio } from "@material-tailwind/react";
+import { Button, Radio, Typography } from "@material-tailwind/react";
 import { CantHelpFallingInLove } from "../assets/audio";
-import axios, { ANALYZE_CHORDS, ANALYZE_NOTES } from "../api/axios";
+import axios, {
+  ANALYZE_BOTH,
+  ANALYZE_CHORDS,
+  ANALYZE_NOTES,
+} from "../api/axios";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import { SignInContext } from "../contexts/SignInContext";
+import { useNavigate } from "react-router-dom";
+import { ReactToast } from "../utils/ReactToast";
 
 const Predict = () => {
-  const containerRef = useRef();
+  const { loggedIn } = useContext(SignInContext);
+  const containerRefForChords = useRef();
+  const containerRefForNotes = useRef();
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
-  const [isComplete, setIsComplete] = useState(false);
+  const [isChordsComplete, setIsChordsComplete] = useState(false);
+  const [isNotesComplete, setIsNotesComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const random = (min, max) => Math.random() * (max - min) + min;
   const [selectedMethod, setSelectedMethod] = useState(0); // State variable for selected radio button
 
   const randomColor = () =>
     `rgba(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)}, 0.5)`;
 
-  // Create a region
+  if (!loggedIn) {
+    ReactToast("Please login to continue", "error");
+    navigate("/login");
+  }
+
+  // Create a region marker function
   const createRegion = (start, end, content) => {
     return {
       start,
@@ -31,47 +48,85 @@ const Predict = () => {
     };
   };
 
-  // Create a region marker
-  const { wavesurfer, isReady, isPlaying, currentTime } = useWavesurfer({
-    container: containerRef,
-    url: CantHelpFallingInLove,
-    waveColor: "green",
-    progressColor: "purple",
-    autoScroll: true,
-    scrollParent: true,
-    minPxPerSec: 100,
-    height: 100,
-    plugins: useMemo(() => [Timeline.create(), RegionsPlugin.create()], []),
-  });
+  // Create the wavesurfer instance for Chords
+  const { wavesurfer: wavesurferForChords, isPlaying: isPlayingForChords } =
+    useWavesurfer({
+      container: containerRefForChords,
+      url: CantHelpFallingInLove,
+      waveColor: "green",
+      progressColor: "purple",
+      autoScroll: true,
+      scrollParent: true,
+      minPxPerSec: 100,
+      height: 100,
+      plugins: useMemo(() => [Timeline.create(), RegionsPlugin.create()], []),
+    });
 
-  // Add region marker when axios request is successful
-  const addRegionMarkerLive = (chords) => {
+  // Create the wavesurfer instance for Notes
+  const { wavesurfer: wavesurferForNotes, isPlaying: isPlayingForNotes } =
+    useWavesurfer({
+      container: containerRefForNotes,
+      url: CantHelpFallingInLove,
+      waveColor: "green",
+      progressColor: "purple",
+      autoScroll: true,
+      scrollParent: true,
+      minPxPerSec: 100,
+      height: 100,
+      plugins: useMemo(() => [Timeline.create(), RegionsPlugin.create()], []),
+    });
+
+  // Register the regions plugin for Chords
+  const chordsRegions =
+    wavesurferForChords &&
+    wavesurferForChords.registerPlugin(RegionsPlugin.create());
+
+  // Register the regions plugin for Notes
+  const notesRegions =
+    wavesurferForNotes &&
+    wavesurferForNotes.registerPlugin(RegionsPlugin.create());
+
+  // Add region marker for Chords
+  const addChordsRegionMarkers = (chords) => {
     console.log("This is the chords", chords);
-    const regions = wavesurfer.registerPlugin(RegionsPlugin.create());
 
     chords.forEach((region) => {
-      regions.addRegion(createRegion(region.start, region.end, region.note));
+      chordsRegions.addRegion(
+        createRegion(region.start, region.end, region.note)
+      );
     });
   };
 
-  // Function to play and pause audio
-  const onPlayPause = () => {
-    wavesurfer && wavesurfer.playPause();
+  // Add region marker for Notes
+  const addNotesRegionMarkers = (notes) => {
+    console.log("This is the notes", notes);
+
+    notes.forEach((region) => {
+      notesRegions.addRegion(
+        createRegion(region.start, region.end, region.note)
+      );
+    });
   };
 
-  // Function to stop audio
-  const onStop = () => {
-    wavesurfer && wavesurfer.stop();
+  // Function to play and pause audio of Chords
+  const onPlayPauseChords = () => {
+    wavesurferForChords && wavesurferForChords.playPause();
   };
 
-  /* useEffect(() => {
-    if (wavesurfer) {
-      wavesurfer.on("ready", () => {
-        // wavesurfer.play();
-        addRegionMarker();
-      });
-    }
-  }, [isReady, wavesurfer]); */
+  // Function to play and pause audio of Notes
+  const onPlayPauseNotes = () => {
+    wavesurferForNotes && wavesurferForNotes.playPause();
+  };
+
+  // Function to stop audio of Chords
+  const onStopChords = () => {
+    wavesurferForChords && wavesurferForChords.stop();
+  };
+
+  // Function to stop audio of Notes
+  const onStopNotes = () => {
+    wavesurferForNotes && wavesurferForNotes.stop();
+  };
 
   // Function to handle file change
   const handleFileChange = (e) => {
@@ -87,6 +142,8 @@ const Predict = () => {
   // Function to handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     const formData = new FormData();
     formData.append("file", file);
 
@@ -94,13 +151,13 @@ const Predict = () => {
     const decodedToken = jwtDecode(token);
     const { userId } = decodedToken;
 
+    // Predict Chords
     if (selectedMethod === 0) {
       const response = await axios.post(
         `${ANALYZE_CHORDS}/${userId}`,
         formData
       );
 
-      // TODO: NEED TO REMAKE THIS
       if (response.status != 201) {
         console.log("Error");
         return;
@@ -111,21 +168,22 @@ const Predict = () => {
 
       const fileURL = URL.createObjectURL(file);
 
-      if (wavesurfer && file) {
-        wavesurfer.load(fileURL);
-        wavesurfer.on("ready", () => {
+      if (wavesurferForChords && file) {
+        wavesurferForChords.load(fileURL);
+        wavesurferForChords.on("ready", () => {
           // wavesurfer.play();
-          addRegionMarkerLive(chords);
+          addChordsRegionMarkers(chords);
           console.log("done");
-          setIsComplete(true);
+          setIsChordsComplete(true);
+          setIsLoading(false);
         });
       }
     }
 
+    // Predict Notes
     if (selectedMethod === 1) {
       const response = await axios.post(`${ANALYZE_NOTES}/${userId}`, formData);
 
-      // TODO: NEED TO REMAKE THIS
       if (response.status != 201) {
         console.log("Error");
         return;
@@ -136,13 +194,49 @@ const Predict = () => {
 
       const fileURL = URL.createObjectURL(file);
 
-      if (wavesurfer && file) {
-        wavesurfer.load(fileURL);
-        wavesurfer.on("ready", () => {
+      if (wavesurferForNotes && file) {
+        wavesurferForNotes.load(fileURL);
+        wavesurferForNotes.on("ready", () => {
           // wavesurfer.play();
-          addRegionMarkerLive(notes);
+          addNotesRegionMarkers(notes);
           console.log("done");
-          setIsComplete(true);
+          setIsNotesComplete(true);
+          setIsLoading(false);
+        });
+      }
+    }
+
+    // Predict Both notes and Chords
+    if (selectedMethod === 2) {
+      const response = await axios.post(`${ANALYZE_BOTH}/${userId}`, formData);
+
+      if (response.status != 201) {
+        console.log("Error");
+        return;
+      }
+
+      console.log(response.data);
+      const { chords, notes } = response.data;
+
+      const fileURL = URL.createObjectURL(file);
+
+      if (wavesurferForChords && wavesurferForNotes && file) {
+        wavesurferForChords.load(fileURL);
+        wavesurferForChords.on("ready", () => {
+          // wavesurfer.play();
+          addChordsRegionMarkers(chords);
+          console.log("done");
+          setIsChordsComplete(true);
+          setIsLoading(false);
+        });
+
+        wavesurferForNotes.load(fileURL);
+        wavesurferForNotes.on("ready", () => {
+          // wavesurfer.play();
+          addNotesRegionMarkers(notes);
+          console.log("done");
+          setIsNotesComplete(true);
+          setIsLoading(false);
         });
       }
     }
@@ -150,16 +244,24 @@ const Predict = () => {
 
   return (
     <>
-      <div>
+      <div className="bg-predict-bg-image h-full bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply">
         <ComplexNavbar className="mx-auto max-w-screen-xl p-7" />
-
+        <Typography
+          variant="h1"
+          className="text-white text-center font-bold text-3xl"
+        >
+          Let{"'"}s Predict Some Music
+        </Typography>
         <div className="flex items-center justify-center p-12">
-          <div className="border border-black rounded-2xl mx-auto w-full max-w-[550px] bg-white">
+          <div className="border border-blue-500 rounded-2xl mx-auto w-full max-w-[550px] bg-[#111827]">
             <form className="py-6 px-9" onSubmit={handleSubmit}>
               <div className="mb-6 pt-4">
-                <label className="mb-5 block text-xl font-semibold text-[#07074D]">
+                <Typography
+                  variant="lead"
+                  className="mb-5 block text-xl font-semibold text-white"
+                >
                   Upload Audio File
-                </label>
+                </Typography>
 
                 <div className="flex items-center justify-center w-full mb-8">
                   <label
@@ -187,9 +289,9 @@ const Predict = () => {
                         or drag and drop
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        MP3, WAV, FLAC, OGG, M4A, AAC, AMR, WMA
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 font-bold">
                         Limit: 1 File
                       </p>
                       {file && (
@@ -213,6 +315,8 @@ const Predict = () => {
                 <Radio
                   name="method"
                   label="Chords Only"
+                  color="light-blue"
+                  labelProps={{ className: "text-white" }}
                   value={0}
                   onChange={handleMethodChange}
                   checked={selectedMethod === 0} // Check if this radio button is selected
@@ -220,6 +324,8 @@ const Predict = () => {
                 <Radio
                   name="method"
                   label="Notes Only"
+                  color="light-blue"
+                  labelProps={{ className: "text-white" }}
                   value={1}
                   onChange={handleMethodChange}
                   checked={selectedMethod === 1} // Check if this radio button is selected
@@ -227,6 +333,8 @@ const Predict = () => {
                 <Radio
                   name="method"
                   label="Both"
+                  color="light-blue"
+                  labelProps={{ className: "text-white" }}
                   value={2}
                   onChange={handleMethodChange}
                   checked={selectedMethod === 2} // Check if this radio button is selected
@@ -235,11 +343,14 @@ const Predict = () => {
 
               <div>
                 <Button
-                  className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                  className="hover:shadow-form rounded-md py-3 px-8 text-center text-base font-semibold text-white outline-none"
                   type="submit"
-                  disabled={file == null ? true : false}
+                  color="light-blue"
+                  disabled={file == null ? true : false || isLoading}
+                  loading={isLoading}
+                  fullWidth
                 >
-                  Send File
+                  Upload File
                 </Button>
               </div>
             </form>
@@ -247,19 +358,36 @@ const Predict = () => {
         </div>
 
         <div
-          className={`mx-auto max-w-screen-2xl ${
-            isComplete ? `block` : `hidden`
+          className={`mx-auto max-w-screen-2xl bg-white border border-white ${
+            isChordsComplete ? `block` : `hidden`
           }`}
         >
           <div>Chord Data</div>
-          <div ref={containerRef} className="mt-10" />
+          <div ref={containerRefForChords} className="mt-10" />
 
-          <Button onClick={onPlayPause} color="blue" className="m-5">
-            {isPlaying ? "Pause" : "Play"}
+          <Button onClick={onPlayPauseChords} color="blue" className="m-5">
+            {isPlayingForChords ? "Pause" : "Play"}
           </Button>
 
-          <Button onClick={onStop} color="red">
-            {isPlaying ? "Stop" : "Stop"}
+          <Button onClick={onStopChords} color="red">
+            {isPlayingForChords ? "Stop" : "Stop"}
+          </Button>
+        </div>
+
+        <div
+          className={`mx-auto max-w-screen-2xl bg-white border border-white ${
+            isNotesComplete ? `block` : `hidden`
+          }`}
+        >
+          <div>Notation Data</div>
+          <div ref={containerRefForNotes} className="mt-10" />
+
+          <Button onClick={onPlayPauseNotes} color="blue" className="m-5">
+            {isPlayingForNotes ? "Pause" : "Play"}
+          </Button>
+
+          <Button onClick={onStopNotes} color="red">
+            {isPlayingForNotes ? "Stop" : "Stop"}
           </Button>
         </div>
       </div>
