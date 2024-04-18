@@ -9,7 +9,6 @@ import { SignInContext } from "./contexts/SignInContext";
 import Articles from "./pages/Articles";
 import Footer from "./components/Footer";
 import Predict from "./pages/Predict";
-import { ComplexNavbar } from "./components/NavBar";
 import Feedback from "./pages/Feedback";
 import AboutUs from "./pages/AboutUs";
 
@@ -20,7 +19,6 @@ function App() {
     <>
       <BrowserRouter>
         <SignInContext.Provider value={{ loggedIn, setLoggedIn }}>
-          {/* <ComplexNavbar /> */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
