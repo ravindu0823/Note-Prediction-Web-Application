@@ -11,7 +11,11 @@ dotenv.config();
 
 const app = express();
 const corsOptions = {
-  origin: ["http://localhost:8080", "http://localhost:5000"],
+  origin: [
+    "http://localhost:8080",
+    "http://159.223.74.216:8080",
+    "http://localhost:5000",
+  ],
   credentials: true,
   optionSuccessStatus: 200,
 };
