@@ -9,7 +9,8 @@ export default withMt({
     extend: {
       backgroundImage: {
         "hero-image": "url('./assets/images/predict_1.webp')",
-        "predict-bg-image": "url('./assets/images/predict_2.webp')",
+        "predict-image": "url('./assets/images/predict_2.webp')",
+        "article-image": "url('./assets/images/articles-bg-image.webp')",
       },
       colors: {
         primary: {
