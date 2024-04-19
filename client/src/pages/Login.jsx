@@ -1,72 +1,41 @@
 import { Button, Input, Typography } from "@material-tailwind/react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import musify_logo from "../assets/images/musify_logo.webp";
 import { useContext, useEffect, useState } from "react";
 import { UserData } from "../models/User";
-import axios, { USER_VALIDATE } from "../api/axios";
-import { USER_LOGIN } from "../api/axios";
-import Cookies from "js-cookie";
 import { ReactToast } from "../utils/ReactToast";
-import { validateUserLoginData } from "../utils/UserDataValidation";
-import { SignInContext } from "../contexts/SignInContext";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Login = () => {
   const [userData, setUserData] = useState(UserData);
   const navigate = useNavigate();
-  const { setLoggedIn } = useContext(SignInContext);
+  const { isSignedIn, signIn } = useContext(AuthContext);
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
 
-  useEffect(() => {
-    const getUserData = async () => {
-      const token = Cookies.get("token");
+  /* if (isSignedIn) {
+      navigate("/");
+    } */
 
-      if (token) {
-        try {
-          const res = await axios.get(USER_VALIDATE, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (res.statusText) navigate("/");
-        } catch (error) {
-          console.error(error);
-          setLoggedIn(false);
-        }
-      }
-    };
-
-    getUserData();
-  }, [navigate, setLoggedIn]);
+  /* useEffect(() => {
+    if (isSignedIn) {
+      navigate("/");
+    }
+  }, [isSignedIn, navigate]); */
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (validateUserLoginData(userData)) {
-      try {
-        const response = await axios.post(USER_LOGIN, { userData });
+    const { status, message } = await signIn(userData);
 
-        const { token } = response.data;
-        Cookies.set("token", token);
-
-        setLoggedIn(true);
-
-        ReactToast("Logged in successfully", "success");
-        navigate("/");
-      } catch (error) {
-        console.log(error);
-
-        if (error.response.status === 404) {
-          ReactToast("Invalid Username", "error");
-        }
-
-        if (error.response.status === 401) {
-          ReactToast("Invalid Password", "error");
-        }
-      }
+    if (!status) {
+      ReactToast(message, "error");
+      return;
     }
+
+    ReactToast(message, "success");
+    navigate("/");
   };
 
   return (
