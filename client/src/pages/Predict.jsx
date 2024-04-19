@@ -12,12 +12,12 @@ import axios, {
 } from "../api/axios";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import { SignInContext } from "../contexts/SignInContext";
 import { useNavigate } from "react-router-dom";
 import { ReactToast } from "../utils/ReactToast";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Predict = () => {
-  const { loggedIn } = useContext(SignInContext);
+  const { isSignedIn } = useContext(AuthContext);
   const containerRefForChords = useRef();
   const containerRefForNotes = useRef();
   const navigate = useNavigate();
@@ -31,10 +31,10 @@ const Predict = () => {
   const randomColor = () =>
     `rgba(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)}, 0.5)`;
 
-  if (!loggedIn) {
+  /* if (!isSignedIn) {
     ReactToast("Please login to continue", "error");
     navigate("/login");
-  }
+  } */
 
   // Create a region marker function
   const createRegion = (start, end, content) => {
@@ -244,7 +244,7 @@ const Predict = () => {
 
   return (
     <>
-      <div className="bg-predict-bg-image h-full bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply">
+      <div className="bg-predict-image h-full bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply">
         <ComplexNavbar className="mx-auto max-w-screen-xl p-7" />
         <Typography
           variant="h1"
