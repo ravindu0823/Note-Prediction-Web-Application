@@ -1,2 +1,15 @@
-FROM nginx
-COPY dist /usr/share/nginx/html
+FROM oven/bun:1.1.4-alpine
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN bun install
+
+COPY . .
+
+RUN bun run build
+
+EXPOSE 8080
+
+CMD [ "bun", "run", "preview" ]
