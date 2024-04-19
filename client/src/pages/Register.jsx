@@ -1,51 +1,40 @@
-import { Button, Checkbox, Input, Typography } from "@material-tailwind/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Button, Input, Typography } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
 import musify_logo from "../assets/images/musify_logo.webp";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserData } from "../models/User";
-import { SignInContext } from "../contexts/SignInContext";
-import { validateUserRegisterData } from "../utils/UserDataValidation";
-import axios, { USER_REGISTER } from "../api/axios";
-import Cookies from "js-cookie";
 import { ReactToast } from "../utils/ReactToast";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Register = () => {
   const [userData, setUserData] = useState(UserData);
   const navigate = useNavigate();
-  const { setLoggedIn } = useContext(SignInContext);
+  const { isSignedIn, signUp } = useContext(AuthContext);
   const [passwordShown, setPasswordShown] = useState(false);
   const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
   const toggleConfirmPasswordVisiblity = () =>
     setConfirmPasswordShown((cur) => !cur);
 
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate("/");
+    }
+  }, [isSignedIn, navigate]);
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (validateUserRegisterData(userData)) {
-      try {
-        const response = await axios.post(USER_REGISTER, { userData });
+    const { status, message } = await signUp(userData);
 
-        const { token } = response.data;
-        Cookies.set("token", token);
-
-        setLoggedIn(true);
-
-        ReactToast("Logged in successfully", "success");
-        navigate("/");
-      } catch (error) {
-        console.log(error);
-
-        if (error.response.status === 404) {
-          ReactToast("Invalid Username", "error");
-        }
-
-        if (error.response.status === 401) {
-          ReactToast("Invalid Password", "error");
-        }
-      }
+    if (!status) {
+      ReactToast(message, "error");
+      return;
     }
+
+    ReactToast(message, "success");
+    navigate("/");
   };
 
   return (
