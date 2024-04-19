@@ -13,32 +13,34 @@ import {
   Bars2Icon,
 } from "@heroicons/react/24/solid";
 import musify_logo from "../assets/images/musify_logo.webp";
-import { useLocation, useNavigate } from "react-router-dom";
-import { SignInContext } from "../contexts/SignInContext";
-import Cookies from "js-cookie";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import propTypes from "prop-types";
-import axios, { USER_VALIDATE } from "../api/axios";
 import { navListItems } from "../utils/NavData";
 import ProfileMenu from "./ProfileMenu";
 import { ReactToast } from "../utils/ReactToast";
+import { AuthContext } from "../contexts/AuthContext";
 
 // nav list component
 function NavList() {
   return (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row items-center mx-auto">
       {navListItems.map(({ label, icon, link }) => (
-        <Typography
-          key={label}
-          as={"a"}
-          placeholder={true}
-          href={link}
-          className="font-medium hover:text-black"
-        >
-          <MenuItem className="flex items-center gap-2" placeholder={true}>
-            {React.createElement(icon, { className: "h-[18px] w-[18px]" })}
-            <span className="">{label}</span>
-          </MenuItem>
-        </Typography>
+        <>
+          <Link to={link}>
+            <Typography
+              key={label}
+              as={"a"}
+              placeholder={true}
+              // href={link}
+              className="font-medium hover:text-black"
+            >
+              <MenuItem className="flex items-center gap-2" placeholder={true}>
+                {React.createElement(icon, { className: "h-[18px] w-[18px]" })}
+                <span className="">{label}</span>
+              </MenuItem>
+            </Typography>
+          </Link>
+        </>
       ))}
     </ul>
   );
@@ -47,36 +49,8 @@ function NavList() {
 export function ComplexNavbar({ className }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
-  const { loggedIn, setLoggedIn } = useContext(SignInContext);
-  const location = useLocation();
+  const { isSignedIn, user, signOut } = useContext(AuthContext);
   const [navbarColor, setNavbarColor] = useState("transparent");
-
-  if (Cookies.get("token")) {
-    setLoggedIn(true);
-  }
-
-  useEffect(() => {
-    const getUserData = async () => {
-      const token = Cookies.get("token");
-
-      if (!token) setLoggedIn(false);
-
-      try {
-        const res = await axios.get(USER_VALIDATE, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!res.statusText) setLoggedIn(false);
-      } catch (error) {
-        console.error(error);
-        setLoggedIn(false);
-      }
-    };
-
-    getUserData();
-  }, [navigate, setLoggedIn]);
 
   /* useEffect(() => {
     if (
@@ -94,7 +68,7 @@ export function ComplexNavbar({ className }) {
 
   const profileMenuItems = [
     {
-      label: "Dashboard",
+      label: `${user?.fullName || "User"}`,
       icon: UserCircleIcon,
       onclick: () => {
         console.log("Dashboard");
@@ -105,10 +79,8 @@ export function ComplexNavbar({ className }) {
       label: "Sign Out",
       icon: PowerIcon,
       onclick: () => {
-        Cookies.remove("token");
-        setLoggedIn(false);
+        signOut();
         ReactToast("Logged out successfully", "success");
-        navigate(0);
       },
     },
   ];
@@ -120,7 +92,6 @@ export function ComplexNavbar({ className }) {
     );
   }, []);
 
-  console.log(location.pathname);
   return (
     <Navbar className={className} color={navbarColor} placeholder={"true"}>
       <div className="relative mx-auto flex items-center text-white font-bold">
@@ -140,7 +111,9 @@ export function ComplexNavbar({ className }) {
           Musify
         </Typography>
 
-        <div className={`hidden lg:flex ${loggedIn ? `lg:mr-24` : `lg:mr-14`}`}>
+        <div
+          className={`hidden lg:flex ${isSignedIn ? `lg:mr-24` : `lg:mr-12`}`}
+        >
           <NavList />
         </div>
 
@@ -157,7 +130,7 @@ export function ComplexNavbar({ className }) {
         </IconButton>
 
         <div className="flex items-center">
-          {loggedIn ? (
+          {isSignedIn ? (
             <ProfileMenu profileMenuItems={profileMenuItems} />
           ) : (
             <Button
@@ -168,7 +141,7 @@ export function ComplexNavbar({ className }) {
               className="lg:mr-2"
               placeholder={"login"}
             >
-              <span>Log In</span>
+              Log In
             </Button>
           )}
 
