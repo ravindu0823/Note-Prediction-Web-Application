@@ -1,6 +1,7 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import musify_logo from "../assets/images/musify_logo.webp";
 import { Button, Input, Typography } from "@material-tailwind/react";
+import { navListItems } from "../utils/NavData";
 
 const Footer = () => {
   const location = useLocation();
@@ -12,7 +13,7 @@ const Footer = () => {
       }
     >
       <div className="mx-auto max-w-screen-2xl text-center">
-        <div className="grid lg:grid-cols-3">
+        <div className="grid lg:grid-cols-4">
           <a
             href="#"
             className="flex items-center mb-4 text-2xl font-semibold lg:mb-0 text-white "
@@ -26,47 +27,16 @@ const Footer = () => {
             />
             Musify
           </a>
-          <ul className="flex flex-wrap items-center mb-4 text-sm  lg:mb-0 text-gray-400">
-            <li>
-              <Typography
-                as={"a"}
-                variant="lead"
-                href="/"
-                className="mr-4 hover:text-blue-500"
-              >
-                Home
-              </Typography>
-            </li>
-            <li>
-              <Typography
-                as={"a"}
-                variant="lead"
-                href="/articles"
-                className="mr-4 hover:text-blue-500"
-              >
-                Articles
-              </Typography>
-            </li>
-            <li>
-              <Typography
-                as={"a"}
-                variant="lead"
-                href="/about"
-                className="mr-4 hover:text-blue-500"
-              >
-                About Us
-              </Typography>
-            </li>
-            <li>
-              <Typography
-                as={"a"}
-                variant="lead"
-                href="/feedback"
-                className="hover:text-blue-500"
-              >
-                Contact Us
-              </Typography>
-            </li>
+          <ul className="flex flex-wrap items-center col-span-2 mb-4 mr-5 text-sm lg:mb-0 text-gray-400">
+            {navListItems.map(({ label, link }, index) => (
+              <li key={index} className="mx-7">
+                <Link to={link}>
+                  <Typography variant="lead" className="hover:text-blue-500">
+                    {label}
+                  </Typography>
+                </Link>
+              </li>
+            ))}
           </ul>
           <form className="flex w-full max-w-sm lg:ml-auto">
             <div className="relative flex w-full max-w-[24rem]">
