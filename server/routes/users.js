@@ -19,7 +19,10 @@ userRouter.post("/register", validateUserAdd, async (req, res) => {
   try {
     await connectToDB();
 
-    const savedUser = new User(userData);
+    const savedUser = new User({
+      ...userData,
+      status: "Active",
+    });
 
     savedUser.password = savedUser.generateHash(userData.password);
 
