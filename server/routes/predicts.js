@@ -199,4 +199,23 @@ predictionRouter.post(
   }
 );
 
+predictionRouter.get("/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const predictions = await Prediction.find({ userId })
+      .populate("songId")
+      .populate("userId");
+
+    if (!predictions) {
+      res.status(404).json("No predictions found");
+    }
+
+    res.status(200).json(predictions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+});
+
 export default predictionRouter;
