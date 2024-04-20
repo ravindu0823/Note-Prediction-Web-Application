@@ -4,6 +4,7 @@ import ScrollAnimationWrapper from "./ScrollAnimationWrapper";
 import ButtonPrimary from "./ButtonPrimary";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { Typography } from "@material-tailwind/react";
 
 const Hero = () => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
@@ -18,14 +19,14 @@ const Hero = () => {
             variants={scrollAnimation}
           >
             <div className=" flex flex-col justify-center items-start row-start-2 sm:row-start-1">
-              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-medium text-black-600 leading-normal text-white">
-                GIVE MUSIC YOUR PERSONAL NOTE!
-              </h1>
-              <p className="text-black-500 mt-4 mb-6 text-lg text-white">
+              <Typography variant="h1" className="text-3xl lg:text-4xl xl:text-5xl font-medium text-black-600 leading-normal text-white uppercase">
+              See the sound, play your vision!
+              </Typography>
+              <Typography variant="lead" className="mt-4 mb-6 text-lg text-white">
                 Musify is the most powerful tool to automatically transcribe
-                your favorite songs to sheet music using Artificial intelligence
-                and Machine Learning.
-              </p>
+                your favorite songs to Audio Data Visualizations using
+                Artificial intelligence and Machine Learning.
+              </Typography>
               <ButtonPrimary
                 addClass="mt-5 text-white"
                 onClick={() => navigate("/predict")}
