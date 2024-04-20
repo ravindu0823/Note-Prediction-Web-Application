@@ -4,7 +4,6 @@ import { AricleSchema } from "../models/article";
 import axios, { GET_ARTICLES } from "../api/axios";
 import ScrollToTop from "react-scroll-to-top";
 import { Typography } from "@material-tailwind/react";
-import ScrollAnimationWrapper from "./ScrollAnimationWrapper";
 import { motion } from "framer-motion";
 import getScrollAnimation from "../utils/getScrollAnimation";
 
