@@ -1,6 +1,6 @@
 import { Typography } from "@material-tailwind/react";
 import propTypes from "prop-types";
-import { easeIn, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useMemo } from "react";
 import getScrollAnimation from "../utils/getScrollAnimation";
 import ScrollAnimationWrapper from "./ScrollAnimationWrapper";
