@@ -17,6 +17,7 @@ import {
   LogIn,
   LucideIcon,
   LucideProps,
+  MessageSquareQuote,
   Moon,
   MoreVertical,
   Newspaper,
@@ -62,6 +63,7 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   news: Newspaper,
+  feedback: MessageSquareQuote,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
