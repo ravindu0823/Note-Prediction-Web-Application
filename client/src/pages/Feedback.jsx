@@ -1,12 +1,33 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ComplexNavbar } from "../components/NavBar";
 import getScrollAnimation from "../utils/getScrollAnimation";
 import ScrollAnimationWrapper from "../components/ScrollAnimationWrapper";
 import { motion } from "framer-motion";
 import { Button, IconButton, Input, Textarea } from "@material-tailwind/react";
+import { FeedbackSchema } from "../models/Feedback";
+import { validateFeedbackData } from "../utils/FeedbackValidation";
+import axios, { CREATE_FEEDBACK } from "../api/axios";
+import { ReactToast } from "../utils/ReactToast";
 
 const Feedback = () => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
+  const [feedbackData, setFeedbackData] = useState(FeedbackSchema);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (validateFeedbackData(feedbackData)) {
+      try {
+        const response = await axios.post(CREATE_FEEDBACK, feedbackData);
+
+        if (response.status !== 201) return;
+
+        ReactToast("Feedback posted successfully, Thank You!", "success");
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <>
@@ -34,36 +55,40 @@ const Feedback = () => {
               className="grid grid-cols-1 gap-x-10 gap-y-10 p-6 mx-auto mb-16 max-w-screen-md rounded-lg border shadow-sm lg:mb-28 bg-[#111827] border-blue-500 sm:grid-cols-2"
               variants={scrollAnimation}
               custom={{ duration: 3 }}
+              onSubmit={handleSubmit}
             >
               <Input
                 type="text"
                 label="First name"
                 color="white"
                 size="lg"
-                /* value={userData.fullName}
+                value={feedbackData.firstName}
                 onChange={(e) =>
-                  setUserData({ ...userData, fullName: e.target.value })
-                } */
+                  setFeedbackData({
+                    ...feedbackData,
+                    firstName: e.target.value,
+                  })
+                }
               />
               <Input
                 type="text"
                 label="Last name"
                 color="white"
                 size="lg"
-                /* value={userData.fullName}
+                value={feedbackData.lastName}
                 onChange={(e) =>
-                  setUserData({ ...userData, fullName: e.target.value })
-                } */
+                  setFeedbackData({ ...feedbackData, lastName: e.target.value })
+                }
               />
               <Input
                 type="email"
                 label="Email address"
                 color="white"
                 size="lg"
-                /* value={userData.fullName}
+                value={feedbackData.email}
                 onChange={(e) =>
-                  setUserData({ ...userData, fullName: e.target.value })
-                } */
+                  setFeedbackData({ ...feedbackData, email: e.target.value })
+                }
               />
               <div>
                 <Input
@@ -71,10 +96,13 @@ const Feedback = () => {
                   label="Phone number"
                   color="white"
                   size="lg"
-                  /* value={userData.fullName}
-                onChange={(e) =>
-                  setUserData({ ...userData, fullName: e.target.value })
-                } */
+                  value={feedbackData.phoneNumber}
+                  onChange={(e) =>
+                    setFeedbackData({
+                      ...feedbackData,
+                      phoneNumber: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="sm:col-span-2">
@@ -85,15 +113,23 @@ const Feedback = () => {
                     label="Your Comment"
                     rows={8}
                     color="cyan"
+                    value={feedbackData.feedback}
+                    onChange={(e) =>
+                      setFeedbackData({
+                        ...feedbackData,
+                        feedback: e.target.value,
+                      })
+                    }
                   />
                   <div className="flex w-full justify-between py-1.5">
                     <div className="flex gap-2">
                       <Button
+                        type="submit"
                         size="md"
                         className="rounded-md mt-5"
                         color="blue"
                       >
-                        Post Comment
+                        Post Feedback
                       </Button>
                     </div>
                   </div>
