@@ -4,5 +4,5 @@ export const UserData = {
   email: null,
   password: null,
   confirmPassword: null,
-  check: false,
+  status: null,
 };
