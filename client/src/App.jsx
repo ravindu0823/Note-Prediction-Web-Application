@@ -9,31 +9,30 @@ import Footer from "./components/Footer";
 import Predict from "./pages/Predict";
 import Feedback from "./pages/Feedback";
 import AboutUs from "./pages/AboutUs";
-import { AuthContextProvider } from "./contexts/AuthContext";
 import { PrivateRoute, PrivateRouteForAuth } from "./contexts/PrivateRoute";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <AuthContextProvider>
-          <Routes>
-            <Route index element={<Home />} />
-            <Route path="/articles" element={<Articles />} />
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="/feedback" element={<Feedback />} />
-            <Route element={<PrivateRoute />}>
-              <Route path="/predict" element={<Predict />} />
-            </Route>
-            <Route element={<PrivateRouteForAuth />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-          <Footer />
-          <Toaster position="bottom-right" reverseOrder={false} />
-        </AuthContextProvider>
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/feedback" element={<Feedback />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/predict" element={<Predict />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route element={<PrivateRouteForAuth />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <Footer />
+        <Toaster position="bottom-right" reverseOrder={false} />
       </BrowserRouter>
     </>
   );
