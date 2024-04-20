@@ -71,7 +71,7 @@ export function ComplexNavbar({ className }) {
       label: `${user?.fullName || "User"}`,
       icon: UserCircleIcon,
       onclick: () => {
-        console.log("Dashboard");
+        navigate("/profile");
       },
     },
 
