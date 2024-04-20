@@ -6,7 +6,6 @@ import {
 } from "../utils/UserDataValidation";
 import axios, { USER_LOGIN, USER_REGISTER, USER_VALIDATE } from "../api/axios";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 // Create a context
@@ -14,7 +13,6 @@ export const AuthContext = createContext();
 
 // Create a provider component
 export const AuthContextProvider = ({ children }) => {
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [error, setError] = useState(null);
@@ -44,7 +42,7 @@ export const AuthContextProvider = ({ children }) => {
     };
 
     validateUserToken();
-  }, [navigate, setIsSignedIn]);
+  }, [setIsSignedIn]);
 
   const signIn = async (userData) => {
     if (validateUserLoginData(userData)) {
