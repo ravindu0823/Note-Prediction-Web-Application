@@ -1,4 +1,6 @@
-FROM oven/bun:1.1.4-alpine
+FROM oven/bun:1.1.4
+
+ENV VITE_BASEURL=http://159.223.74.216:3000
 
 WORKDIR /app
 
