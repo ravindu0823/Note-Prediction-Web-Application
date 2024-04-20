@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import getScrollAnimation from "../utils/getScrollAnimation";
 import { motion } from "framer-motion";
 import ScrollAnimationWrapper from "./ScrollAnimationWrapper";
+import { Typography } from "@material-tailwind/react";
+import { Link } from "react-router-dom";
 
 const FeaturesComponent = () => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
@@ -28,13 +30,16 @@ const FeaturesComponent = () => {
               className="text-gray-400 sm:text-lg"
               variants={scrollAnimation}
             >
-              <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-white">
-                Designed for business teams
-              </h2>
+              <Typography
+                variant="h2"
+                className="mb-4 text-4xl tracking-tight font-extrabold text-white"
+              >
+                Musify is the Perfect App for Your Songs Visualizations
+              </Typography>
               <p className="mb-8 font-light lg:text-xl text-white">
-                Deliver great service experiences fast - without the complexity
-                of traditional ITSM solutions.Accelerate critical development
-                work, eliminate toil, and deploy changes with ease.
+                We develop handcrafted AI algorithms for each Song Features.
+                Musify provides you with the best visualizations for your songs
+                and many more features.
               </p>
               <div className="py-8 mb-6 border-t border-b border-gray-700">
                 <motion.div
@@ -63,16 +68,21 @@ const FeaturesComponent = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-bold text-white">
-                      Private repos
-                    </h3>
-                    <p className="mb-2 font-light text-gray-400">
-                      Host code that you don{"'"}t want to share with the world
-                      in private GitHub repos only accessible to you and people
-                      you share them with.
-                    </p>
-                    <a
-                      href="#"
+                    <Typography
+                      variant="lead"
+                      className="mb-2 text-xl font-bold text-white"
+                    >
+                      Visualize Audio Data in Real-Time
+                    </Typography>
+                    <Typography
+                      variant="paragraph"
+                      className="mb-2 font-light text-gray-400"
+                    >
+                      Real-time audio visualization turns sounds into visual
+                      data, showing the rhythm and pulse of music as it plays.
+                    </Typography>
+                    <Link
+                      to="/about"
                       className="inline-flex items-center text-primary-500 hover:text-primary-600"
                     >
                       Learn more
@@ -88,7 +98,7 @@ const FeaturesComponent = () => {
                           clipRule="evenodd"
                         ></path>
                       </svg>
-                    </a>
+                    </Link>
                   </div>
                 </motion.div>
                 <motion.div
@@ -117,15 +127,22 @@ const FeaturesComponent = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-bold text-white">
-                      Dependency graph
-                    </h3>
-                    <p className="mb-2 font-light text-gray-400">
-                      See the packages your project depends on, the repositories
-                      that depend on them, and any vulnerabilities detected.
-                    </p>
-                    <a
-                      href="#"
+                    <Typography
+                      variant="lead"
+                      className="mb-2 text-xl font-bold text-white"
+                    >
+                      Get in Touch with the Latest Music Trends and News.
+                    </Typography>
+                    <Typography
+                      variant="paragraph"
+                      className="mb-2 font-light text-gray-400"
+                    >
+                      Stay attuned to the heartbeat of the music industry! Keep
+                      your finger on the pulse of evolving genres, emerging
+                      artists, and groundbreaking tracks.
+                    </Typography>
+                    <Link
+                      to="/about"
                       className="inline-flex items-center text-purple-500 hover:text-purple-600"
                     >
                       Learn more
@@ -141,7 +158,7 @@ const FeaturesComponent = () => {
                           clipRule="evenodd"
                         ></path>
                       </svg>
-                    </a>
+                    </Link>
                   </div>
                 </motion.div>
                 <motion.div
@@ -170,16 +187,22 @@ const FeaturesComponent = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-bold text-white">
-                      Code scanning
-                    </h3>
-                    <p className="mb-2 font-light text-gray-400">
-                      Find vulnerabilities in custom code using static analysis.
-                      Prevent new vulnerabilities from being introduced by
-                      scanning every pull request.
-                    </p>
-                    <a
-                      href="#"
+                    <Typography
+                      variant="lead"
+                      className="mb-2 text-xl font-bold text-white"
+                    >
+                      Manage Users Previously Analyzed Songs
+                    </Typography>
+                    <Typography
+                      variant="paragraph"
+                      className="mb-2 font-light text-gray-400"
+                    >
+                      To manage and view the history of previously analyzed
+                      songs, you can use a feature that allows you to access
+                      your past searches and transcriptions 🎼
+                    </Typography>
+                    <Link
+                      to="/about"
                       className="inline-flex items-center text-teal-500 hover:text-teal-600"
                     >
                       Learn more
@@ -195,7 +218,7 @@ const FeaturesComponent = () => {
                           clipRule="evenodd"
                         ></path>
                       </svg>
-                    </a>
+                    </Link>
                   </div>
                 </motion.div>
               </div>
