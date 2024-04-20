@@ -19,6 +19,16 @@ export type News = {
   image: string;
 };
 
+export type Feedback = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  feedback: string;
+  status: string;
+};
+
 export type Employee = {
   id: number;
   first_name: string;
@@ -46,7 +56,7 @@ export const navItems: NavItem[] = [
     label: "Dashboard",
   },
   {
-    title: "User",
+    title: "Users",
     href: "/dashboard/user",
     icon: "user",
     label: "user",
@@ -58,6 +68,12 @@ export const navItems: NavItem[] = [
     label: "news",
   },
   {
+    title: "Feedbacks",
+    href: "/dashboard/feedback",
+    icon: "feedback",
+    label: "feedback",
+  },
+  /* {
     title: "Employee",
     href: "/dashboard/employee",
     icon: "employee",
@@ -68,7 +84,7 @@ export const navItems: NavItem[] = [
     href: "/dashboard/profile",
     icon: "profile",
     label: "profile",
-  },
+  }, */
   /* {
     title: "Kanban",
     href: "/dashboard/kanban",
