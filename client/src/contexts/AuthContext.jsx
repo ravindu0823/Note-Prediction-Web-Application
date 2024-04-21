@@ -66,14 +66,14 @@ export const AuthContextProvider = ({ children }) => {
         if (error.response.status === 404) {
           return {
             status: false,
-            message: "Invalid Username",
+            message: error.response.data.error,
           };
         }
 
         if (error.response.status === 401) {
           return {
             status: false,
-            message: "Invalid Password",
+            message: error.response.data.error,
           };
         }
       }
