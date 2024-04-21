@@ -1,213 +1,39 @@
-import User from "../models/user.js";
-import { connectToDB } from "../db/conn.js";
 import express from "express";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import {
   validateUserAdd,
   validateUserLogin,
   validateUserUpdate,
 } from "../middlewares/userValidation.js";
+import {
+  authenticateUserToken,
+  deleteUserById,
+  getAllUsers,
+  getUserDataById,
+  reactivateUserById,
+  updateUserById,
+  userLogin,
+  userRegister,
+} from "../controllers/users.js";
 
 dotenv.config();
 const userRouter = express.Router();
 
 // Register new users
-userRouter.post("/register", validateUserAdd, async (req, res) => {
-  const { userData } = await req.body;
-
-  try {
-    await connectToDB();
-
-    const savedUser = new User({
-      ...userData,
-      status: "Active",
-    });
-
-    savedUser.password = savedUser.generateHash(userData.password);
-
-    await savedUser.save();
-
-    console.log(savedUser);
-    if (!savedUser) res.send("Not found").status(404);
-
-    const token = jwt.sign(
-      { userId: savedUser._id, fullName: savedUser.fullName },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "10m",
-      }
-    );
-
-    return res.status(201).json({ token });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
+userRouter.post("/register", validateUserAdd, userRegister);
 // Login Existing Users
-userRouter.post("/login", validateUserLogin, async (req, res) => {
-  const { userData } = await req.body;
-  const { userName } = userData;
-  const { password } = userData;
-
-  try {
-    await connectToDB();
-
-    const loggedUser = await User.findOne({ userName });
-
-    if (!loggedUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    if (!loggedUser.validPassword(password, loggedUser.password)) {
-      //password did not match
-      return res.status(401).json({ error: "Incorrect password" });
-    } else {
-      // password matched. proceed forward
-      console.log("password matched");
-      const token = jwt.sign(
-        { userId: loggedUser._id, fullName: loggedUser.fullName },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "10m",
-        }
-      );
-      return res.status(200).json({ token });
-    }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: error.message });
-  }
-});
-
-userRouter.put("/update/:userId", validateUserUpdate, async (req, res) => {
-  const { userId } = req.params;
-  const { userData } = await req.body;
-
-  try {
-    await connectToDB();
-
-    const updatedUser = await User.findByIdAndUpdate(userId, userData);
-
-    if (!updatedUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const newUser = await User.findById(userId);
-
-    return res.status(200).json({ newUser });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: error.message });
-  }
-});
-
-userRouter.put("/reactivate/:userId", async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    await connectToDB();
-
-    const reactivatedUser = await User.findByIdAndUpdate(userId, {
-      status: "Active",
-    });
-
-    if (!reactivatedUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    return res.status(200).json({ message: "User reactivated" });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: error.message });
-  }
-});
-
-userRouter.delete("/delete/:userId", async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    await connectToDB();
-
-    const deletedUser = await User.findByIdAndUpdate(userId, {
-      status: "Deleted",
-    });
-
-    if (!deletedUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    return res.status(200).json({ message: "User deleted" });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: error.message });
-  }
-});
-
+userRouter.post("/login", validateUserLogin, userLogin);
+// Update user by userId
+userRouter.put("/update/:userId", validateUserUpdate, updateUserById);
+// Reactivate user by userId
+userRouter.put("/reactivate/:userId", reactivateUserById);
+// Suspend the user by userId
+userRouter.delete("/delete/:userId", deleteUserById);
 // Get all users
-userRouter.get("/", async (req, res) => {
-  try {
-    await connectToDB();
-
-    const users = await User.find();
-
-    if (users.length == 0) {
-      return res.status(400).json({ message: "Unauthorized" });
-    }
-
-    return res.status(200).json(users);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: error.message });
-  }
-});
-
+userRouter.get("/", getAllUsers);
 // Authenticate user
-userRouter.get("/protected", async (req, res) => {
-  try {
-    const authHeader = await req.headers.authorization;
-    // console.log(authHeader);
-    const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // console.log(decoded.userId);
-
-    if (!decoded) {
-      return res.status(400).json({ message: "Expired. Unauthorized" });
-    } else if (decoded.exp < Date.now() / 1000) {
-      return res.status(400).json({ message: "Expired. Unauthorized" });
-    } else {
-      // If the token is valid, return some protected data
-      return res.status(200).json({ data: "Protected data" });
-    }
-  } catch (error) {
-    console.log("Token Verification Error: ", error);
-    return res.status(400).json({ message: "Unauthorized" });
-  }
-});
-
+userRouter.get("/protected", authenticateUserToken);
 // Get user by id
-userRouter.get("/:userId", async (req, res) => {
-  const { userId } = req.params;
-
-  console.log(userId);
-
-  try {
-    await connectToDB();
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "No Users" });
-    }
-
-    return res.status(200).json({ user });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: error.message });
-  }
-});
+userRouter.get("/:userId", getUserDataById);
 
 export default userRouter;
