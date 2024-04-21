@@ -56,7 +56,9 @@ feedbacRouter.get("/:id", async (req, res) => {
 
     const feedback = await Feedback.findById(id);
 
-    if (!feedback) res.send("Not found").status(404);
+    if (!feedback) {
+      return res.status(404).json({ error: "Feedback not found" });
+    }
 
     return res.status(200).json(feedback);
   } catch (error) {
@@ -70,6 +72,12 @@ feedbacRouter.put("/suspend/:id", async (req, res) => {
 
   try {
     await connectToDB();
+
+    const validateFeedback = await Feedback.findById(id);
+
+    if (!validateFeedback) {
+      return res.status(404).json({ error: "Feedback not found" });
+    }
 
     const feedback = await Feedback.findByIdAndUpdate(id, {
       status: "Suspended",
@@ -91,6 +99,12 @@ feedbacRouter.put("/activate/:id", async (req, res) => {
 
   try {
     await connectToDB();
+
+    const validateFeedback = await Feedback.findById(id);
+
+    if (!validateFeedback) {
+      return res.status(404).json({ error: "Feedback not found" });
+    }
 
     const feedback = await Feedback.findByIdAndUpdate(id, {
       status: "Active",
