@@ -157,7 +157,7 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <FormField
+          {/* <FormField
             control={form.control}
             name="imgUrl"
             render={({ field }) => (
@@ -173,7 +173,7 @@ export const EmployeeForm: React.FC<ProductFormProps> = ({
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
               control={form.control}
