@@ -36,7 +36,7 @@ describe("POST /addAll", () => {
   test("should add all news from scrape", async () => {
     // Mock response from scraping news
 
-    await request(app).post("/news/addAll").expect(200 || 500); // Expect a 200 status code
+    await request(app).post("/news/addAll").expect(500); // Expect a 200 status code
   });
 });
 
