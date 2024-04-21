@@ -1,0 +1,27 @@
+name: Run Tests - Server
+
+on:
+  push:
+    branches: ["dev-vite"]
+
+jobs:
+  Run-Tests-CI:
+    defaults:
+      run:
+        working-directory: ./server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+        with:
+            bun-version: latest
+      - name: setup git config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: Dependecies
+        run: |
+          bun install
+          npm ci
+      - name: Run Tests - CI
+        run: bun run test
