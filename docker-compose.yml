@@ -22,6 +22,17 @@ services:
     networks:
       - mynetwork
 
+  admin:
+    container_name: admin-container
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    image: ravindu0823/musify-admin:1.1.2
+    ports:
+      - "5000:5000"
+    networks:
+      - mynetwork
+
 networks:
   mynetwork:
     driver: bridge
