@@ -16,6 +16,7 @@ const corsOptions = {
     "http://localhost:8080",
     "http://159.223.74.216:8080",
     "http://localhost:5000",
+    "http://159.223.74.216:5000",
   ],
   credentials: true,
   optionSuccessStatus: 200,
