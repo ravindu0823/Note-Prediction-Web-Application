@@ -22,6 +22,6 @@ jobs:
       - name: Dependecies
         run: |
           bun install
-          npm ci
+          bun ci
       - name: Run Tests - CI
         run: bun run test
