@@ -32,10 +32,6 @@ export default function Page() {
         <BreadCrumb items={breadcrumbItems} />
         {userData && (
           <UserForm
-            categories={[
-              { _id: "shirts", name: "shirts" },
-              { _id: "pants", name: "pants" },
-            ]}
             initialData={{
               _id: userData._id,
               username: userData.userName,
