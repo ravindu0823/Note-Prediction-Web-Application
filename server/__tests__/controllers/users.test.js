@@ -150,7 +150,7 @@ describe("POST /register", () => {
     const response = await request(app)
       .post("/users/register")
       .send({ userData })
-      .expect(500); // expect a 400 status code
+      .expect(400); // expect a 400 status code
     expect(response.body.error).toBeDefined(); // expect an error message
   });
 });
