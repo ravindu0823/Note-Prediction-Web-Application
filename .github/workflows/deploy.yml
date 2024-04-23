@@ -2,8 +2,7 @@ name: Deploy to Digital Ocean
 
 on:
   push:
-    tags:
-      - stage-*
+    branches: ["test-release"]
 
 jobs:
   Deploy-to-Digital-Ocean:
@@ -19,6 +18,6 @@ jobs:
           script: |
             cd Note-Prediction-Web-Application/
             git pull origin dev-vite
-            docker-compose down
-            docker-compose build
-            docker-compose up -d
+            docker compose down
+            docker compose build
+            docker compose up -d
