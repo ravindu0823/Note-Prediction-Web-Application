@@ -2,7 +2,8 @@ name: Deploy to Digital Ocean
 
 on:
   push:
-    branches: ["test-release"]
+    tags:
+      - stage-*
 
 jobs:
   Deploy-to-Digital-Ocean:
@@ -12,12 +13,12 @@ jobs:
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: "159.223.74.216"
-          username: "root"
-          password: "RAVIndu751$S"
+          host: ${{ secrets.DIGITAL_OCEAN_HOST }}
+          username: ${{ secrets.DIGITAL_OCEAN_USERNAME }}
+          password: ${{ secrets.DIGITAL_OCEAN_PASSWORD }}
           script: |
             cd Note-Prediction-Web-Application/
-            git pull origin dev-vite
+            git pull origin production
             docker compose down
             docker compose build
             docker compose up -d
