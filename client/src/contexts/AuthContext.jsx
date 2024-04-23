@@ -107,20 +107,10 @@ export const AuthContextProvider = ({ children }) => {
         };
       } catch (error) {
         console.error(error);
-
-        if (error.response.status === 404) {
-          return {
-            status: false,
-            message: "Invalid Username",
-          };
-        }
-
-        if (error.response.status === 401) {
-          return {
-            status: false,
-            message: "Invalid Password",
-          };
-        }
+        return {
+          status: false,
+          message: error.response.data.error,
+        };
       }
     }
   };
