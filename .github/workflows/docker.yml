@@ -2,16 +2,11 @@ name: Docker Compose - Push to DockerHub
 
 on:
   push:
-    branches: ["dev-vite"]
-  workflow_run:
-    workflows: ["Run Tests - Server"]
-    types:
-      - completed
+    branches: ["production"]
 
 jobs:
   Build-and-Push:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
