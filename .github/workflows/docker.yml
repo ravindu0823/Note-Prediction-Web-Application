@@ -1,9 +1,9 @@
-name: Docker Compose - Staging Deployment
+name: Docker Compose - Push to DockerHub
 
 on:
   push:
     branches: ["dev-vite"]
-  workflow_run: 
+  workflow_run:
     workflows: ["Run Tests - Server"]
     types:
       - completed
@@ -30,5 +30,3 @@ jobs:
         run: |
           docker-compose build
           docker-compose push
-
-          
