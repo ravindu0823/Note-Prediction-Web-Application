@@ -1,0 +1,24 @@
+name: Deploy to Digital Ocean
+
+on:
+  push:
+    tags:
+      - stage-*
+
+jobs:
+  Deploy-to-Digital-Ocean:
+    name: Deploy to Digital Ocean
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: "159.223.74.216"
+          username: "root"
+          password: "RAVIndu751$S"
+          script: |
+            cd Note-Prediction-Web-Application/
+            git pull origin dev-vite
+            docker-compose down
+            docker-compose build
+            docker-compose up -d
