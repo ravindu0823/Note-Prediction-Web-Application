@@ -11,6 +11,13 @@ export const userRegister = async (req, res) => {
   try {
     await connectToDB();
 
+    const validateUserName = await User.findOne({
+      userName: userData.userName,
+    });
+
+    if (validateUserName)
+      return res.status(400).json({ error: "Username already exists" });
+
     const savedUser = new User({
       ...userData,
       status: "Active",
@@ -21,7 +28,7 @@ export const userRegister = async (req, res) => {
     await savedUser.save();
 
     console.log(savedUser);
-    if (!savedUser) res.send("Not found").status(404);
+    if (!savedUser) return res.send("Not found").status(404);
 
     const token = jwt.sign(
       { userId: savedUser._id, fullName: savedUser.fullName },
@@ -48,25 +55,21 @@ export const userLogin = async (req, res) => {
 
     const loggedUser = await User.findOne({ userName, status: "Active" });
 
-    if (!loggedUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    if (!loggedUser) return res.status(404).json({ error: "User not found" });
 
-    if (!loggedUser.validPassword(password, loggedUser.password)) {
-      //password did not match
+    if (!loggedUser.validPassword(password, loggedUser.password))
       return res.status(401).json({ error: "Incorrect password" });
-    } else {
-      // password matched. proceed forward
-      console.log("password matched");
-      const token = jwt.sign(
-        { userId: loggedUser._id, fullName: loggedUser.fullName },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "10m",
-        }
-      );
-      return res.status(200).json({ token });
-    }
+
+    // password matched. proceed forward
+    console.log("password matched");
+    const token = jwt.sign(
+      { userId: loggedUser._id, fullName: loggedUser.fullName },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "10m",
+      }
+    );
+    return res.status(200).json({ token });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: error.message });
@@ -82,15 +85,12 @@ export const updateUserById = async (req, res) => {
 
     const user = await User.findById(userId);
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    if (!user) return res.status(404).json({ error: "User not found" });
 
     const updatedUser = await User.findByIdAndUpdate(userId, userData);
 
-    if (!updatedUser) {
+    if (!updatedUser)
       return res.status(404).json({ error: "User cannot updated" });
-    }
 
     const newUser = await User.findById(userId);
 
@@ -111,9 +111,8 @@ export const reactivateUserById = async (req, res) => {
       status: "Active",
     });
 
-    if (!reactivatedUser) {
+    if (!reactivatedUser)
       return res.status(404).json({ error: "User not found" });
-    }
 
     return res.status(200).json({ message: "User reactivated" });
   } catch (error) {
@@ -132,9 +131,7 @@ export const deleteUserById = async (req, res) => {
       status: "Deleted",
     });
 
-    if (!deletedUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    if (!deletedUser) return res.status(404).json({ error: "User not found" });
 
     return res.status(200).json({ message: "User deleted" });
   } catch (error) {
@@ -169,14 +166,14 @@ export const authenticateUserToken = async (req, res) => {
 
     // console.log(decoded.userId);
 
-    if (!decoded) {
+    if (!decoded)
       return res.status(400).json({ message: "Expired. Unauthorized" });
-    } else if (decoded.exp < Date.now() / 1000) {
+
+    if (decoded.exp < Date.now() / 1000)
       return res.status(400).json({ message: "Expired. Unauthorized" });
-    } else {
-      // If the token is valid, return some protected data
-      return res.status(200).json({ data: "Protected data" });
-    }
+
+    // If the token is valid, return some protected data
+    return res.status(200).json({ data: "Protected data" });
   } catch (error) {
     console.log("Token Verification Error: ", error);
     return res.status(400).json({ message: "Unauthorized" });
@@ -193,9 +190,7 @@ export const getUserDataById = async (req, res) => {
 
     const user = await User.findById(userId);
 
-    if (!user) {
-      return res.status(404).json({ error: "No Users" });
-    }
+    if (!user) return res.status(404).json({ error: "No Users" });
 
     return res.status(200).json({ user });
   } catch (error) {
