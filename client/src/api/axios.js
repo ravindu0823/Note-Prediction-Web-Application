@@ -10,6 +10,7 @@ export const ANALYZE_CHORDS = "predict/analyzeChords";
 export const ANALYZE_NOTES = "predict/analyzeNotes";
 export const ANALYZE_BOTH = "predict/analyzeBoth";
 export const CREATE_FEEDBACK = "feedback/add";
+export const SEND_EMAIL = "emails/send";
 
 export default axios.create({
   baseURL: import.meta.env.VITE_BASEURL,
