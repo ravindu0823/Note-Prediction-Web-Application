@@ -2,9 +2,40 @@ import { Link, useLocation } from "react-router-dom";
 import musify_logo from "../assets/images/musify_logo.webp";
 import { Button, Input, Typography } from "@material-tailwind/react";
 import { navListItems } from "../utils/NavData";
+import { render } from "@react-email/render";
+import { NewsLetterEmail } from "../email/NewsLetter";
+import axios, { SEND_EMAIL } from "../api/axios";
+import { useState } from "react";
+import { ReactToast } from "../utils/ReactToast";
 
 const Footer = () => {
   const location = useLocation();
+  const [userEmail, setUserEmail] = useState("");
+
+  const sendNewsLetter = async (e) => {
+    e.preventDefault();
+    console.log("heheee");
+
+    const emailHtml = render(<NewsLetterEmail />, {
+      pretty: true,
+    });
+
+    try {
+      const response = await axios.post(SEND_EMAIL, {
+        userEmail,
+        emailHtml,
+      });
+
+      if (response.status === 201) {
+        ReactToast("Email sent successfully", "success");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    // console.log(emailHtml);
+  };
+
   return (
     <footer
       className={`p-4 py-8 md:p-8 lg:p-10 bg-[#111827] `}
@@ -38,20 +69,24 @@ const Footer = () => {
               </li>
             ))}
           </ul>
-          <form className="flex w-full max-w-sm lg:ml-auto">
+          <form
+            className="flex w-full max-w-sm lg:ml-auto"
+            onSubmit={sendNewsLetter}
+          >
             <div className="relative flex w-full max-w-[24rem]">
               <Input
                 type="email"
                 label="Email Address"
                 color="white"
-                // value={email}
-                // onChange={onChange}
+                value={userEmail}
+                onChange={(e) => setUserEmail(e.target.value)}
                 className="pr-20"
                 containerProps={{
                   className: "min-w-0",
                 }}
               />
               <Button
+                type="submit"
                 size="sm"
                 color="blue"
                 // color={email ? "gray" : "blue-gray"}

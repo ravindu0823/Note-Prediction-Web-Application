@@ -1,14 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
 import fs from "fs";
-import axios from "axios";
 import FormData from "form-data";
 import Prediction from "../models/predict.js";
 import upload from "../middlewares/fileUpload.js";
 import Song from "../models/song.js";
+import axios from "axios";
 
 dotenv.config();
 const predictionRouter = express.Router();
+const FLASK_SERVER =
+  process.env.NODE_ENV === "prod"
+    ? process.env.REMOTEHOST
+    : process.env.LOCALHOST;
 
 predictionRouter.post(
   "/analyzeNotes/:userId",
@@ -33,8 +37,7 @@ predictionRouter.post(
 
     try {
       const response = await axios.post(
-        // "http://159.223.75.67:5000/analyzeBoth",
-        "http://localhost:5000/analyzeNotes",
+        `${FLASK_SERVER}/analyzeNotes`,
         formData
       );
 
@@ -94,8 +97,7 @@ predictionRouter.post(
 
     try {
       const response = await axios.post(
-        // "http://159.223.75.67:5000/analyzeBoth",
-        "http://localhost:5000/analyzeChords",
+        `${FLASK_SERVER}/analyzeChords`,
         formData
       );
 
@@ -160,8 +162,7 @@ predictionRouter.post(
 
     try {
       const response = await axios.post(
-        // "http://159.223.75.67:5000/analyzeBoth",
-        "http://localhost:5000/analyzeBoth",
+        `${FLASK_SERVER}/analyzeBoth`,
         formData
       );
 

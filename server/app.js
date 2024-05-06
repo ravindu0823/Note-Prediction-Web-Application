@@ -7,6 +7,7 @@ import newsRouter from "./routes/news.js";
 import predictionRouter from "./routes/predicts.js";
 import adminRouter from "./routes/admins.js";
 import feedbacRouter from "./routes/feedbacks.js";
+import emailRouter from "./routes/emails.js";
 
 dotenv.config();
 
@@ -47,5 +48,6 @@ app.use("/news", newsRouter);
 app.use("/predict", predictionRouter);
 app.use("/admin", adminRouter);
 app.use("/feedback", feedbacRouter);
+app.use("/emails", emailRouter);
 
 export default app;
