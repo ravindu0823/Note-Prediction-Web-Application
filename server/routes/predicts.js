@@ -14,6 +14,8 @@ const FLASK_SERVER =
     ? process.env.REMOTEHOST
     : process.env.LOCALHOST;
 
+console.log(FLASK_SERVER);
+
 predictionRouter.post(
   "/analyzeNotes/:userId",
   upload.single("file"),
