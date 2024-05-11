@@ -6,17 +6,18 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    image: ravindu0823/musify-client:1.1.5
+    image: ravindu0823/musify-client:1.1.6
     ports:
       - "8080:8080"
     networks:
       - mynetwork
+      
   server:
     container_name: server-container
     build:
       context: ./server
       dockerfile: Dockerfile
-    image: ravindu0823/musify-server:1.1.5
+    image: ravindu0823/musify-server:1.1.6
     ports:
       - "3000:3000"
     networks:
@@ -27,7 +28,7 @@ services:
     build:
       context: ./admin
       dockerfile: Dockerfile
-    image: ravindu0823/musify-admin:1.1.5
+    image: ravindu0823/musify-admin:1.1.6
     ports:
       - "5000:5000"
     networks:
