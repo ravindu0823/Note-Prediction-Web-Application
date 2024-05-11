@@ -20,6 +20,7 @@ const ButtonPrimary = ({ children, addClass, onClick }) => {
 ButtonPrimary.propTypes = {
   children: propTypes.node.isRequired,
   addClass: propTypes.string,
+  onClick: propTypes.func,
 };
 
 export default ButtonPrimary;
