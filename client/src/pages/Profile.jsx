@@ -2,29 +2,28 @@ import { Button, Input, Typography } from "@material-tailwind/react";
 import { ComplexNavbar } from "../components/NavBar";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { PredictSchema } from "../models/Predict";
-import axios, { GET_HISTORY, GET_USER } from "../api/axios";
+import axios, {
+  DELETE_HISTORY,
+  GET_HISTORY,
+  GET_USER,
+  USER_UPDATE,
+} from "../api/axios";
 import { AuthContext } from "../contexts/AuthContext";
 import { UserData } from "../models/User";
-import { useNavigate } from "react-router-dom";
 import AudioHistoryTable from "../components/HistoryCard";
 import ScrollAnimationWrapper from "../components/ScrollAnimationWrapper";
 import { motion } from "framer-motion";
 import getScrollAnimation from "../utils/getScrollAnimation";
+import { ReactToast } from "../utils/ReactToast";
 
 const Profile = () => {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [historyData, setHistoryData] = useState([PredictSchema]);
   const [userData, setUserData] = useState(UserData);
-  const { user } = useContext(AuthContext);
+  const { user, signOut } = useContext(AuthContext);
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
 
   useEffect(() => {
-    /* if (!user) {
-      navigate("/login");
-      return;
-    } */
-
     const getHistory = async () => {
       try {
         const response = await axios.get(`${GET_HISTORY}/${user.userId}`);
@@ -56,8 +55,36 @@ const Profile = () => {
     getHistory();
   }, [user]);
 
-  console.log(historyData);
-  console.log(userData);
+  const handleDeleteHistory = async (id) => {
+    console.log(id);
+    try {
+      const response = await axios.delete(`${DELETE_HISTORY}/${id}`);
+
+      if (response.status === 404) return;
+
+      setHistoryData(historyData.filter((data) => data._id !== id));
+      ReactToast("History deleted successfully", "success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUserUpdate = async () => {
+    console.log(userData);
+
+    try {
+      const response = await axios.put(`${USER_UPDATE}/${user.userId}`, {
+        userData,
+      });
+
+      if (response.status === 404) return;
+
+      setUserData(response.data.newUser);
+      ReactToast("Profile updated successfully", "success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="bg-hero-image h-full bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply mx-auto">
@@ -131,6 +158,7 @@ const Profile = () => {
                 <Button
                   className="w-1/2 block mx-auto rounded-md hover:shadow-lg font-semibold px-7 py-2"
                   color="blue"
+                  onClick={handleUserUpdate}
                 >
                   Update Profile
                 </Button>
@@ -141,6 +169,7 @@ const Profile = () => {
                 <Button
                   className="w-1/2 block mx-auto rounded-md hover:shadow-lg font-semibold px-7 py-2"
                   color="red"
+                  onClick={signOut}
                 >
                   Sign Out
                 </Button>
@@ -151,7 +180,7 @@ const Profile = () => {
 
         <ScrollAnimationWrapper>
           <motion.div
-            className="bg-[#111827] mt-14 text-white border rounded-lg border-cyan-500 h-fit lg:w-fit"
+            className="bg-[#111827] mt-14 text-white border rounded-lg border-cyan-500 h-[585px] lg:w-fit"
             variants={scrollAnimation}
           >
             <div className="mx-10 my-6">
@@ -160,11 +189,14 @@ const Profile = () => {
               </Typography>
 
               {isLoading ? (
-                <Typography variant="lead" className="mt-5">
+                <Typography variant="lead" className="text-center mt-5">
                   Loading...
                 </Typography>
               ) : !isLoading && historyData.length > 1 ? (
-                <AudioHistoryTable historyData={historyData} />
+                <AudioHistoryTable
+                  historyData={historyData}
+                  onClick={handleDeleteHistory}
+                />
               ) : (
                 <Typography variant="lead" className="mt-5">
                   You have no previous predicted data

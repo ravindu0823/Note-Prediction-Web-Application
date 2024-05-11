@@ -33,112 +33,114 @@ const Feedback = () => {
     <>
       <section className="bg-[#111827]">
         <ScrollAnimationWrapper>
-          <div className="bg-[url('https://flowbite.s3.amazonaws.com/blocks/marketing-ui/contact/laptop-human.jpg')] h-screen bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply">
+          <div className="bg-contact-us-image h-screen bg-no-repeat bg-cover bg-center bg-blue-gray-400 bg-blend-multiply">
             <ComplexNavbar className="p-7 mx-auto max-w-screen-xl" />
             <motion.div
-              className="px-4 lg:pt-5 pt-8 pb-20 lg:pb-80 mx-auto max-w-screen-sm text-center lg:px-6"
+              className="px-4 lg:pt-5 pt-8 pb-20 lg:pb-80 mx-auto text-center lg:px-6"
               variants={scrollAnimation}
             >
-              <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-white">
-                Feedback
-              </h2>
-              <p className="mb-16 font-light text-gray-400 sm:text-xl">
-                We use an agile approach to test assumptions and connect with
-                the needs of your audience early and often.
-              </p>
-            </motion.div>
-          </div>
-        </ScrollAnimationWrapper>
-        <div className="px-4 mx-auto -mt-[675px] max-w-screen-xl sm:py-24 lg:px-6 ">
-          <ScrollAnimationWrapper>
-            <motion.form
-              className="grid grid-cols-1 gap-x-10 gap-y-10 p-6 mx-auto mb-16 max-w-screen-md rounded-lg border shadow-sm lg:mb-28 bg-[#111827] border-blue-500 sm:grid-cols-2"
-              variants={scrollAnimation}
-              custom={{ duration: 3 }}
-              onSubmit={handleSubmit}
-            >
-              <Input
-                type="text"
-                label="First name"
-                color="white"
-                size="lg"
-                value={feedbackData.firstName}
-                onChange={(e) =>
-                  setFeedbackData({
-                    ...feedbackData,
-                    firstName: e.target.value,
-                  })
-                }
-              />
-              <Input
-                type="text"
-                label="Last name"
-                color="white"
-                size="lg"
-                value={feedbackData.lastName}
-                onChange={(e) =>
-                  setFeedbackData({ ...feedbackData, lastName: e.target.value })
-                }
-              />
-              <Input
-                type="email"
-                label="Email address"
-                color="white"
-                size="lg"
-                value={feedbackData.email}
-                onChange={(e) =>
-                  setFeedbackData({ ...feedbackData, email: e.target.value })
-                }
-              />
-              <div>
+              <div className="max-w-screen-sm text-center mx-auto">
+                <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-white ">
+                  Feedback
+                </h2>
+                <p className="mb-16 font-light text-white sm:text-xl">
+                  We use an agile approach to test assumptions and connect with
+                  the needs of your audience early and often.
+                </p>
+              </div>
+
+              <form
+                className="grid grid-cols-1 gap-x-10 gap-y-10 p-6 mx-auto mb-16 max-w-screen-md rounded-lg border shadow-sm lg:mb-28 bg-[#111827] border-blue-500 sm:grid-cols-2"
+                onSubmit={handleSubmit}
+              >
                 <Input
-                  type="tel"
-                  label="Phone number"
+                  type="text"
+                  label="First name"
                   color="white"
                   size="lg"
-                  value={feedbackData.phoneNumber}
+                  value={feedbackData.firstName}
                   onChange={(e) =>
                     setFeedbackData({
                       ...feedbackData,
-                      phoneNumber: e.target.value,
+                      firstName: e.target.value,
                     })
                   }
                 />
-              </div>
-              <div className="sm:col-span-2">
-                <div className="relative w-full">
-                  <Textarea
-                    variant="outlined"
-                    className="text-white"
-                    label="Your Comment"
-                    rows={8}
-                    color="cyan"
-                    value={feedbackData.feedback}
+                <Input
+                  type="text"
+                  label="Last name"
+                  color="white"
+                  size="lg"
+                  value={feedbackData.lastName}
+                  onChange={(e) =>
+                    setFeedbackData({
+                      ...feedbackData,
+                      lastName: e.target.value,
+                    })
+                  }
+                />
+                <Input
+                  type="email"
+                  label="Email address"
+                  color="white"
+                  size="lg"
+                  value={feedbackData.email}
+                  onChange={(e) =>
+                    setFeedbackData({ ...feedbackData, email: e.target.value })
+                  }
+                />
+                <div>
+                  <Input
+                    type="tel"
+                    label="Phone number"
+                    color="white"
+                    size="lg"
+                    value={feedbackData.phoneNumber}
                     onChange={(e) =>
                       setFeedbackData({
                         ...feedbackData,
-                        feedback: e.target.value,
+                        phoneNumber: e.target.value,
                       })
                     }
                   />
-                  <div className="flex w-full justify-between py-1.5">
-                    <div className="flex gap-2">
-                      <Button
-                        type="submit"
-                        size="md"
-                        className="rounded-md mt-5"
-                        color="blue"
-                      >
-                        Post Feedback
-                      </Button>
+                </div>
+                <div className="sm:col-span-2">
+                  <div className="relative w-full">
+                    <Textarea
+                      variant="outlined"
+                      className="text-white"
+                      label="Your Comment"
+                      rows={8}
+                      color="cyan"
+                      value={feedbackData.feedback}
+                      onChange={(e) =>
+                        setFeedbackData({
+                          ...feedbackData,
+                          feedback: e.target.value,
+                        })
+                      }
+                    />
+                    <div className="flex w-full justify-between py-1.5">
+                      <div className="flex gap-2">
+                        <Button
+                          type="submit"
+                          size="md"
+                          className="rounded-md mt-5"
+                          color="blue"
+                        >
+                          Post Feedback
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </motion.form>
-          </ScrollAnimationWrapper>
+              </form>
+            </motion.div>
+          </div>
+        </ScrollAnimationWrapper>
+        <div className="px-4 mx-auto max-w-screen-xl sm:py-24 lg:py-0 lg:pb-10 lg:px-6">
           <ScrollAnimationWrapper>
-            <div className="space-y-8 text-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0 pt-20">
+            <div className="text-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0 pt-20">
               <motion.div
                 whileHover={{
                   scale: 1.1,

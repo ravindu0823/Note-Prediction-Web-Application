@@ -14,6 +14,8 @@ const FLASK_SERVER =
     ? process.env.REMOTEHOST
     : process.env.LOCALHOST;
 
+console.log(FLASK_SERVER);
+
 predictionRouter.post(
   "/analyzeNotes/:userId",
   upload.single("file"),
@@ -213,6 +215,23 @@ predictionRouter.get("/:userId", async (req, res) => {
     }
 
     res.status(200).json(predictions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+});
+
+predictionRouter.delete("/delete/:predictionId", async (req, res) => {
+  const { predictionId } = req.params;
+
+  try {
+    const prediction = await Prediction.findByIdAndDelete(predictionId);
+
+    if (!prediction) {
+      res.status(404).json("Prediction not found");
+    }
+
+    res.status(200).json("Prediction deleted successfully");
   } catch (error) {
     console.error(error);
     res.status(500).json(error.message);

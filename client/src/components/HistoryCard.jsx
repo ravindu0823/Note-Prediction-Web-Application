@@ -2,6 +2,7 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   IconButton,
+  Tooltip,
   Typography,
 } from "@material-tailwind/react";
 import propTypes from "prop-types";
@@ -13,7 +14,7 @@ const TABLE_HEAD = [
   "Actions",
 ];
 
-const AudioHistoryTable = ({ historyData }) => {
+const AudioHistoryTable = ({ historyData, onClick }) => {
   const extractSongName = (songName) => {
     // Split the path by 'Z' and take the last part
     const parts = songName.split("Z");
@@ -44,9 +45,9 @@ const AudioHistoryTable = ({ historyData }) => {
   };
   return (
     <>
-      <Card className="h-full w-fit overflow-scroll mt-5">
-        <table className="w-full min-w-max table-auto text-left">
-          <thead>
+      <Card className="max-h-[450px] w-fit overflow-scroll mt-5">
+        <table className="w-full min-w-max text-left">
+          <thead className="sticky top-0">
             <tr>
               {TABLE_HEAD.map((head) => (
                 <th
@@ -96,9 +97,16 @@ const AudioHistoryTable = ({ historyData }) => {
                     </Typography>
                   </td>
                   <td className="p-4">
-                    <IconButton size="sm" color="red" className="rounded-md">
-                      <TrashIcon className="h-4 w-4" />
-                    </IconButton>
+                    <Tooltip content="Delete History">
+                      <IconButton
+                        size="sm"
+                        color="red"
+                        className="rounded-md"
+                        onClick={() => onClick(_id)}
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </IconButton>
+                    </Tooltip>
                   </td>
                 </tr>
               ))
@@ -116,6 +124,7 @@ const AudioHistoryTable = ({ historyData }) => {
 
 AudioHistoryTable.propTypes = {
   historyData: propTypes.array.isRequired,
+  onClick: propTypes.func.isRequired,
 };
 
 export default AudioHistoryTable;

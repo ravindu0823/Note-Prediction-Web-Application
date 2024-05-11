@@ -18,16 +18,6 @@ const Login = () => {
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
 
-  /* if (isSignedIn) {
-      navigate("/");
-    } */
-
-  /* useEffect(() => {
-    if (isSignedIn) {
-      navigate("/");
-    }
-  }, [isSignedIn, navigate]); */
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -45,7 +35,7 @@ const Login = () => {
   return (
     <>
       <ScrollAnimationWrapper>
-        <div className="bg-[url('https://klang.io/wp-content/uploads/2024/02/klangio_background_tinified.jpg')] bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply bg-opacity-60">
+        <div className="bg-klangio-image bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply bg-opacity-60">
           <motion.div
             className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen pt:mt-0"
             variants={scrollAnimation}

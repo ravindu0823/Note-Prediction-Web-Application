@@ -13,7 +13,7 @@ import {
   Bars2Icon,
 } from "@heroicons/react/24/solid";
 import musify_logo from "../assets/images/musify_logo.webp";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import propTypes from "prop-types";
 import { navListItems } from "../utils/NavData";
 import ProfileMenu from "./ProfileMenu";
@@ -50,19 +50,6 @@ export function ComplexNavbar({ className }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
   const { isSignedIn, user, signOut } = useContext(AuthContext);
-  const [navbarColor, setNavbarColor] = useState("transparent");
-
-  /* useEffect(() => {
-    if (
-      location.pathname === "/" ||
-      location.pathname === "/feedback" ||
-      location.pathname === "/about"
-    ) {
-      setNavbarColor("transparent");
-    } else {
-      setNavbarColor("blue-gray");
-    }
-  }, [location.pathname]); */
 
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
 
@@ -93,7 +80,7 @@ export function ComplexNavbar({ className }) {
   }, []);
 
   return (
-    <Navbar className={className} color={navbarColor} placeholder={"true"}>
+    <Navbar className={className} color="transparent" placeholder={"true"}>
       <div className="relative mx-auto flex items-center text-white font-bold">
         <Typography
           placeholder={"true"}
@@ -150,10 +137,9 @@ export function ComplexNavbar({ className }) {
             size="lg"
             color="light-blue"
             className="mr-2 rounded-full ms-7 hidden lg:block"
-            placeholder={"Get Started"}
             onClick={() => navigate("/predict")}
           >
-            <span>Get Started</span>
+            {isSignedIn ? "Analyze Song" : "Get Started"}
           </Button>
         </div>
       </div>

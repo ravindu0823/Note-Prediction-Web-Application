@@ -32,8 +32,6 @@ const Footer = () => {
     } catch (error) {
       console.log(error);
     }
-
-    // console.log(emailHtml);
   };
 
   return (
@@ -101,7 +99,7 @@ const Footer = () => {
         <hr className="my-6 sm:mx-auto border-gray-700 lg:my-8" />
         <div className="sm:items-center sm:justify-between sm:flex">
           <span className="block text-sm  text-gray-400">
-            © 2021-2022{" "}
+            © 2023-2024{" "}
             <a href="#" className="hover:underline">
               Musify™
             </a>
