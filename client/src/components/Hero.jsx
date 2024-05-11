@@ -1,12 +1,14 @@
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import getScrollAnimation from "../utils/getScrollAnimation";
 import ScrollAnimationWrapper from "./ScrollAnimationWrapper";
 import ButtonPrimary from "./ButtonPrimary";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@material-tailwind/react";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Hero = () => {
+  const { isSignedIn } = useContext(AuthContext);
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
   const navigate = useNavigate();
 
@@ -19,10 +21,16 @@ const Hero = () => {
             variants={scrollAnimation}
           >
             <div className=" flex flex-col justify-center items-start row-start-2 sm:row-start-1">
-              <Typography variant="h1" className="text-3xl lg:text-4xl xl:text-5xl font-medium text-black-600 leading-normal text-white uppercase">
-              See the sound, play your vision!
+              <Typography
+                variant="h1"
+                className="text-3xl lg:text-4xl xl:text-5xl font-medium text-black-600 leading-normal text-white uppercase"
+              >
+                See the sound, play your vision!
               </Typography>
-              <Typography variant="lead" className="mt-4 mb-6 text-lg text-white">
+              <Typography
+                variant="lead"
+                className="mt-4 mb-6 text-lg text-white"
+              >
                 Musify is the most powerful tool to automatically transcribe
                 your favorite songs to Audio Data Visualizations using
                 Artificial intelligence and Machine Learning.
@@ -31,7 +39,7 @@ const Hero = () => {
                 addClass="mt-5 text-white"
                 onClick={() => navigate("/predict")}
               >
-                Get Started
+                {isSignedIn ? "Analyze Song" : "Get Started"}
               </ButtonPrimary>
             </div>
             <div className="flex w-full">
