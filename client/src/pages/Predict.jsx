@@ -1,9 +1,14 @@
-import { useRef, useMemo, useState, useContext } from "react";
+import { useRef, useMemo, useState } from "react";
 import { useWavesurfer } from "@wavesurfer/react";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.esm.js";
 import Timeline from "wavesurfer.js/dist/plugins/timeline.esm.js";
 import { ComplexNavbar } from "../components/NavBar";
-import { Button, Radio, Typography } from "@material-tailwind/react";
+import {
+  Button,
+  ButtonGroup,
+  Radio,
+  Typography,
+} from "@material-tailwind/react";
 import { CantHelpFallingInLove } from "../assets/audio";
 import axios, {
   ANALYZE_BOTH,
@@ -12,15 +17,10 @@ import axios, {
 } from "../api/axios";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
-import { ReactToast } from "../utils/ReactToast";
-import { AuthContext } from "../contexts/AuthContext";
 
 const Predict = () => {
-  const { isSignedIn } = useContext(AuthContext);
   const containerRefForChords = useRef();
   const containerRefForNotes = useRef();
-  const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [isChordsComplete, setIsChordsComplete] = useState(false);
   const [isNotesComplete, setIsNotesComplete] = useState(false);
@@ -30,11 +30,6 @@ const Predict = () => {
 
   const randomColor = () =>
     `rgba(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)}, 0.5)`;
-
-  /* if (!isSignedIn) {
-    ReactToast("Please login to continue", "error");
-    navigate("/login");
-  } */
 
   // Create a region marker function
   const createRegion = (start, end, content) => {
@@ -106,6 +101,24 @@ const Predict = () => {
         createRegion(region.start, region.end, region.note)
       );
     });
+  };
+
+  // Function to Skip 5 Seconds Backward
+  const skipBackwardNotes = () => {
+    wavesurferForNotes.skip(-5);
+  };
+
+  const skipBackwardChords = () => {
+    wavesurferForChords.skip(-5);
+  };
+
+  // Function to Skip 5 Seconds Forward
+  const skipForwardNotes = () => {
+    wavesurferForNotes.skip(5);
+  };
+
+  const skipForwardChords = () => {
+    wavesurferForChords.skip(5);
   };
 
   // Function to play and pause audio of Chords
@@ -244,7 +257,7 @@ const Predict = () => {
 
   return (
     <>
-      <div className="bg-predict-image h-full bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply">
+      <div className="bg-predict-image h-full bg-no-repeat bg-cover bg-center bg-gray-700 bg-blend-multiply pb-5">
         <ComplexNavbar className="mx-auto max-w-screen-xl p-7" />
         <Typography
           variant="h1"
@@ -358,37 +371,79 @@ const Predict = () => {
         </div>
 
         <div
-          className={`mx-auto max-w-screen-2xl bg-white border border-white ${
+          className={`mx-auto max-w-screen-2xl bg-[#111827] border text-white rounded-xl mb-5 border-blue-500 ${
             isChordsComplete ? `block` : `hidden`
           }`}
         >
-          <div>Chord Data</div>
-          <div ref={containerRefForChords} className="mt-10" />
+          <Typography variant="h4" className="text-center font-bold mt-3">
+            Chord Data
+          </Typography>
+          <div ref={containerRefForChords} className="my-10 mx-10" />
 
-          <Button onClick={onPlayPauseChords} color="blue" className="m-5">
-            {isPlayingForChords ? "Pause" : "Play"}
-          </Button>
+          <hr className="text-red-600 mx-20" />
 
-          <Button onClick={onStopChords} color="red">
-            {isPlayingForChords ? "Stop" : "Stop"}
-          </Button>
+          <ButtonGroup
+            className="m-4 items-center justify-center"
+            variant="gradient"
+            color="blue-gray"
+          >
+            <Button
+              onClick={onStopChords}
+              size="sm"
+              color="red"
+              className="bg-red-500"
+            >
+              Stop
+            </Button>
+
+            <Button onClick={skipBackwardChords} color="yellow">
+              Backward (5s)
+            </Button>
+
+            <Button onClick={onPlayPauseChords} color="blue">
+              {isPlayingForChords ? "Pause" : "Play"}
+            </Button>
+
+            <Button onClick={skipForwardChords} color="yellow">
+              Forward (5s)
+            </Button>
+          </ButtonGroup>
         </div>
 
         <div
-          className={`mx-auto max-w-screen-2xl bg-white border border-white ${
+          className={`mx-auto max-w-screen-2xl bg-[#111827] border text-white rounded-xl border-blue-500 ${
             isNotesComplete ? `block` : `hidden`
           }`}
         >
-          <div>Notation Data</div>
-          <div ref={containerRefForNotes} className="mt-10" />
+          <Typography variant="h4" className="text-center font-bold mt-3">
+            Notation Data
+          </Typography>
 
-          <Button onClick={onPlayPauseNotes} color="blue" className="m-5">
-            {isPlayingForNotes ? "Pause" : "Play"}
-          </Button>
+          <div ref={containerRefForNotes} className="my-10 mx-10" />
 
-          <Button onClick={onStopNotes} color="red">
-            {isPlayingForNotes ? "Stop" : "Stop"}
-          </Button>
+          <hr className="fill-blue-500 mx-20" />
+
+          <ButtonGroup
+            className="m-4 items-center justify-center"
+            variant="gradient"
+            color="blue-gray"
+          >
+            <Button onClick={onStopNotes} color="red">
+              Stop
+            </Button>
+
+            <Button onClick={skipBackwardNotes} color="yellow">
+              Backward (5s)
+            </Button>
+
+            <Button onClick={onPlayPauseNotes} color="blue">
+              {isPlayingForNotes ? "Pause" : "Play"}
+            </Button>
+
+            <Button onClick={skipForwardNotes} color="yellow">
+              Forward (5s)
+            </Button>
+          </ButtonGroup>
         </div>
       </div>
     </>
