@@ -22,40 +22,36 @@ const Article = () => {
   return (
     <>
       <div className="px-4 mx-auto max-w-screen-xl lg:py-7 lg:px-6">
-        
-          <div className="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
-            <Typography
-              className="mb-4 text-4xl tracking-tight font-extrabold text-white"
-              variant="h2"
-            >
-              Music Articles
-            </Typography>
-            <Typography
-              variant="lead"
-              className="font-light sm:text-xl text-gray-400"
-            >
-              We use an agile approach to test assumptions and connect with the
-              needs of your audience early and often.
-            </Typography>
-          </div>
-          <motion.div
-            className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
-            variants={scrollAnimation}
+        <div className="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
+          <Typography
+            className="mb-4 text-4xl tracking-tight font-extrabold text-white"
+            variant="h2"
           >
-            {articles.length > 1 &&
-              articles.map((article) => (
-                <ArticleCard
-                  key={article._id}
-                  image={article.image}
-                  title={article.title}
-                  target={article.target}
-                  category={article.category}
-                  desc={article.desc}
-                  date={article.date}
-                />
-              ))}
-          </motion.div>
-        
+            Music Articles
+          </Typography>
+          <Typography variant="lead" className="sm:text-xl text-white">
+            We use an agile approach to test assumptions and connect with the
+            needs of your audience early and often.
+          </Typography>
+        </div>
+        <motion.div
+          className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+          variants={scrollAnimation}
+        >
+          {articles.length > 1 &&
+            articles.map((article) => (
+              <ArticleCard
+                key={article._id}
+                image={article.image}
+                title={article.title}
+                target={article.target}
+                category={article.category}
+                desc={article.desc}
+                date={article.date}
+              />
+            ))}
+        </motion.div>
+
         <ScrollToTop smooth color="#111827" />
       </div>
     </>
