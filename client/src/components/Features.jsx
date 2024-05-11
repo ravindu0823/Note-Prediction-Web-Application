@@ -18,7 +18,7 @@ const FeaturesComponent = () => {
               variants={scrollAnimation}
             >
               <img
-                className="mb-4 w-full lg:mb-0 rounded-lg"
+                className="mb-4 w-full lg:mb-0 rounded-lg border-2 border-blue-500"
                 src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/features/feature-office-long.png"
                 alt="feature image"
               />
@@ -222,11 +222,10 @@ const FeaturesComponent = () => {
                   </div>
                 </motion.div>
               </div>
-              <p className="text-sm">
-                Deliver great service experiences fast - without the complexity
-                of traditional ITSM solutions.Accelerate critical development
-                work, eliminate toil, and deploy changes with ease.
-              </p>
+              <Typography variant="paragraph" className="text-sm">
+                By using the Musify you can get the best visualizations for your
+                songs and many more features.
+              </Typography>
             </motion.div>
           </ScrollAnimationWrapper>
         </div>
