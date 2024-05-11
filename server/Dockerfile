@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN yarn
 
 COPY . .
 
@@ -17,4 +17,4 @@ ENV REMOTEHOST=http://167.99.73.26:5000
 
 EXPOSE 3000
 
-CMD [ "npm", "run", "start" ]
+CMD [ "yarn", "start" ]
