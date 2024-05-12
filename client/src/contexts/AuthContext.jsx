@@ -4,16 +4,22 @@ import {
   validateUserLoginData,
   validateUserRegisterData,
 } from "../utils/UserDataValidation";
-import axios, { USER_LOGIN, USER_REGISTER, USER_VALIDATE } from "../api/axios";
+import axios, {
+  GET_USER,
+  USER_LOGIN,
+  USER_REGISTER,
+  USER_VALIDATE,
+} from "../api/axios";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import { UserData } from "../models/User";
 
 // Create a context
 export const AuthContext = createContext();
 
 // Create a provider component
 export const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(UserData);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [error, setError] = useState(null);
 
@@ -36,6 +42,15 @@ export const AuthContextProvider = ({ children }) => {
 
         setIsSignedIn(true);
         setUser(decodedToken);
+
+        const { userId } = decodedToken;
+
+        const resUserdata = await axios.get(`${GET_USER}/${userId}`);
+
+        setUser({
+          ...decodedToken,
+          image: resUserdata.data.user.image,
+        });
       } catch (error) {
         setIsSignedIn(false);
       }
@@ -55,7 +70,17 @@ export const AuthContextProvider = ({ children }) => {
         const decodedToken = jwtDecode(token);
         setUser(decodedToken);
 
+        const { userId } = decodedToken;
+
+        const resUserdata = await axios.get(`${GET_USER}/${userId}`);
+
+        setUser({
+          ...decodedToken,
+          image: resUserdata.data.user.image,
+        });
+
         setIsSignedIn(true);
+
         return {
           status: true,
           message: `Welcome back ${decodedToken.fullName}!`,
@@ -98,6 +123,15 @@ export const AuthContextProvider = ({ children }) => {
 
         const decodedToken = jwtDecode(token);
         setUser(decodedToken);
+
+        const { userId } = decodedToken;
+
+        const resUserdata = await axios.get(`${GET_USER}/${userId}`);
+
+        setUser({
+          ...decodedToken,
+          image: resUserdata.data.user.image,
+        });
 
         setIsSignedIn(true);
 
