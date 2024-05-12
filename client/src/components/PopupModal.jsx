@@ -54,7 +54,7 @@ const PopupModal = ({ open, handleOpen }) => {
               className="text-black mt-7 w-fit lg:max-w-[15rem]"
               onClick={handleOpen}
             >
-              I understant, continue
+              I understand, continue
             </Button>
           </div>
         </div>
