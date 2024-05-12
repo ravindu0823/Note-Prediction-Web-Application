@@ -5,4 +5,5 @@ export const UserData = {
   password: null,
   confirmPassword: null,
   status: null,
+  image: null,
 };
