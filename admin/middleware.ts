@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import jwt from "jsonwebtoken";
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
@@ -13,6 +14,14 @@ export async function middleware(request: NextRequest) {
 
   if (request.nextUrl.pathname.startsWith("/dashboard") && !token) {
     return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  if (token) {
+    const decodedToken = jwt.decode(token.value) as { exp: number };
+
+    if (decodedToken.exp * 1000 < Date.now()) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 }
 
