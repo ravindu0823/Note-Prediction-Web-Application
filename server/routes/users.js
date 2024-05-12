@@ -8,6 +8,7 @@ import {
 import {
   authenticateUserToken,
   deleteUserById,
+  getAllActiveUserCount,
   getAllUsers,
   getUserDataById,
   reactivateUserById,
@@ -35,5 +36,7 @@ userRouter.get("/", getAllUsers);
 userRouter.get("/protected", authenticateUserToken);
 // Get user by id
 userRouter.get("/:userId", getUserDataById);
+// Get All Active User Count
+userRouter.get("/active/count", getAllActiveUserCount);
 
 export default userRouter;
