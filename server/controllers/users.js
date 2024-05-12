@@ -198,3 +198,19 @@ export const getUserDataById = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+export const getAllActiveUserCount = async (req, res) => {
+  try {
+    await connectToDB();
+
+    const users = await User.find({ status: "Active" });
+
+    if (users.length == 0) {
+      return res.status(400).json({ message: "Unauthorized" });
+    }
+
+    return res.status(200).json({ count: users.length });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
+};

@@ -13,6 +13,12 @@ export const UPDATE_USERS = "users/update";
 export const CREATE_USER = "users/register";
 export const DELETE_USER = "users/delete";
 export const REACTIVATE_USER = "users/reactivate";
+export const VALIDATE_ADMIN = "admin/protected";
+
+export const ACTIVE_USER_COUNT = "users/active/count";
+export const ACTIVE_FEEDBACK_COUNT = "feedback/active/count";
+export const NEWS_COUNT = "news/count";
+export const PREDICT_COUNT = "predict/count";
 
 export default axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_BASEURL,

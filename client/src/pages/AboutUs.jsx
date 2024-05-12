@@ -79,7 +79,7 @@ const AboutUs = () => {
               custom={{ duration: 3 }}
             >
               <img
-                className="w-full shadow-lg border border-white rounded-xl"
+                className="w-full shadow-lg border border-cyan-500 rounded-xl"
                 src={about_us_image}
                 alt="Content image"
               />

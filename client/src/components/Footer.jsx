@@ -44,7 +44,7 @@ const Footer = () => {
       <div className="mx-auto max-w-screen-2xl text-center">
         <div className="grid lg:grid-cols-4">
           <a
-            href="#"
+            href="/"
             className="flex items-center mb-4 text-2xl font-semibold lg:mb-0 text-white "
           >
             <img
@@ -100,7 +100,7 @@ const Footer = () => {
         <div className="sm:items-center sm:justify-between sm:flex">
           <span className="block text-sm  text-gray-400">
             © 2023-2024{" "}
-            <a href="#" className="hover:underline">
+            <a href="/" className="hover:underline">
               Musify™
             </a>
             . All Rights Reserved.

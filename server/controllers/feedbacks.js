@@ -42,6 +42,21 @@ export const getAllFeedbacks = async (req, res) => {
   }
 };
 
+export const getAllActiveFeedbacks = async (req, res) => {
+  try {
+    await connectToDB();
+
+    const feedbacks = await Feedback.find({ status: "Active" });
+
+    if (!feedbacks) res.send("Not found").status(404);
+
+    return res.status(200).json(feedbacks);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getFeedbackById = async (req, res) => {
   const { id } = req.params;
 
@@ -109,6 +124,21 @@ export const activateFeedbackById = async (req, res) => {
     const updatedFeedback = await Feedback.findById(id);
 
     return res.status(200).json(updatedFeedback);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getActiveFeedbackCount = async (req, res) => {
+  try {
+    await connectToDB();
+
+    const feedbacks = await Feedback.find({ status: "Active" });
+
+    if (!feedbacks) res.send("Not found").status(400);
+
+    return res.status(200).json({ count: feedbacks.length });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });

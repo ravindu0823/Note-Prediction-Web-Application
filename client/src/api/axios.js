@@ -11,6 +11,7 @@ export const ANALYZE_CHORDS = "predict/analyzeChords";
 export const ANALYZE_NOTES = "predict/analyzeNotes";
 export const ANALYZE_BOTH = "predict/analyzeBoth";
 export const CREATE_FEEDBACK = "feedback/add";
+export const GET_ALL_ACTIVE_FEEDBACKS = "feedback/active";
 export const SEND_EMAIL = "emails/send";
 export const DELETE_HISTORY = "predict/delete";
 

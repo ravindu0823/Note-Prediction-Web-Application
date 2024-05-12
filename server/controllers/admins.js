@@ -29,7 +29,7 @@ export const addAdmin = async (req, res) => {
       { adminId: savedAdmin._id },
       process.env.JWT_SECRET,
       {
-        expiresIn: "10m",
+        expiresIn: "40m",
       }
     );
 
@@ -68,7 +68,7 @@ export const adminLogin = async (req, res) => {
         },
         process.env.JWT_SECRET,
         {
-          expiresIn: "10m",
+          expiresIn: "40m",
         }
       );
       return res.status(200).json({ token });

@@ -13,8 +13,8 @@ interface Props {
 }
 
 export const metadata: Metadata = {
-  title: "Next Shadcn",
-  description: "Basic dashboard with Next.js and Shadcn",
+  title: "Musify Dashboard",
+  description: "Musify Admin Dashboard",
 };
 
 export default async function RootLayout({ children }: Props) {

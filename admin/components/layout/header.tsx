@@ -3,8 +3,23 @@ import { cn } from "@/lib/utils";
 import { MobileSidebar } from "./mobile-sidebar";
 import { UserNav } from "./user-nav";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+
+interface AdminCookieProps {
+  adminId: string;
+  adminName: string;
+  adminEmail: string;
+}
 
 export default function Header() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("token");
+
+  const decodedToken: AdminCookieProps = jwt.decode(
+    token.value,
+  ) as AdminCookieProps;
+
   return (
     <div className="fixed top-0 left-0 right-0 supports-backdrop-blur:bg-background/60 border-b bg-background/95 backdrop-blur z-20">
       <nav className="h-14 flex items-center justify-between px-4">
@@ -29,7 +44,10 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <UserNav />
+          <UserNav
+            name={decodedToken && decodedToken.adminName}
+            email={decodedToken && decodedToken.adminEmail}
+          />
           <ThemeToggle />
         </div>
       </nav>

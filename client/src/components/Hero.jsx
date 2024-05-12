@@ -47,8 +47,6 @@ const Hero = () => {
                 <img
                   src="https://melodyscanner.com/Content/img/header-mockup.png"
                   alt="Hero Logo"
-                  width={500}
-                  height={500}
                 />
               </motion.div>
             </div>

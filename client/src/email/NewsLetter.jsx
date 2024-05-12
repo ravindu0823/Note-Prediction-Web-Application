@@ -120,7 +120,7 @@ export const NewsLetterEmail = () => (
           </Text>
 
           <Section style={buttonContainer}>
-            <Link style={button} href="" target="_blank">
+            <Link style={button} href="http://159.223.74.216:8080/" target="_blank">
               Go to Musify
             </Link>
           </Section>
