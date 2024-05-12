@@ -1,18 +1,17 @@
-import { CalendarDateRangePicker } from "@/components/date-range-picker";
-import { Overview } from "@/components/overview";
-import { RecentSales } from "@/components/recent-sales";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+"use client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
+import axios, {
+  ACTIVE_FEEDBACK_COUNT,
+  ACTIVE_USER_COUNT,
+  NEWS_COUNT,
+  PREDICT_COUNT,
+} from "@/axios/axios";
+import { useEffect, useState } from "react";
+import { getCookie } from "@/lib/token";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 interface AdminCookieProps {
   adminId: string;
@@ -20,41 +19,82 @@ interface AdminCookieProps {
   adminEmail: string;
 }
 
+interface DashbordeProps {
+  totalUsers: string;
+  totalNewsArticles: string;
+  totalFeedbacks: string;
+  totalPredictions: string;
+}
+
 export default function Page() {
-  const cookieStore = cookies();
-  const token = cookieStore.get("token");
+  const [dashboardData, setDashboardData] = useState<DashbordeProps>({
+    totalUsers: "Loading...",
+    totalNewsArticles: "Loading...",
+    totalFeedbacks: "Loading...",
+    totalPredictions: "Loading...",
+  });
+
+  const [token, setToken] = useState<RequestCookie>({
+    name: "",
+    value: "",
+  });
+
+  useEffect(() => {
+    const getToken = async () => {
+      const token = await getCookie("token");
+      setToken(token);
+    };
+    getToken();
+  }, []);
 
   const decodedToken: AdminCookieProps = jwt.decode(
     token.value,
   ) as AdminCookieProps;
 
-  // console.log(decodedToken);
+  useEffect(() => {
+    const getAllCounts = async () => {
+      const activeUserCount = await axios.get(ACTIVE_USER_COUNT);
+      const activeFeedbackCount = await axios.get(ACTIVE_FEEDBACK_COUNT);
+      const newsCount = await axios.get(NEWS_COUNT);
+      const predictCount = await axios.get(PREDICT_COUNT);
+
+      if (
+        activeUserCount.status === 400 ||
+        activeFeedbackCount.status === 400 ||
+        newsCount.status === 400 ||
+        predictCount.status === 400
+      )
+        return;
+
+      setDashboardData({
+        totalUsers: activeUserCount.data.count,
+        totalNewsArticles: newsCount.data.count,
+        totalFeedbacks: activeFeedbackCount.data.count,
+        totalPredictions: predictCount.data.count,
+      });
+    };
+    getAllCounts();
+  }, []);
+
+  console.log(dashboardData);
 
   return (
     <ScrollArea className="h-full">
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">
-            Hi {decodedToken.adminName}, Welcome back 👋
+            Hi {decodedToken && decodedToken.adminName}, Welcome back 👋
           </h2>
-          <div className="hidden md:flex items-center space-x-2">
-            <CalendarDateRangePicker />
-            <Button>Download</Button>
-          </div>
         </div>
+
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics" disabled>
-              Analytics
-            </TabsTrigger>
-          </TabsList>
           <TabsContent value="overview" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1 lg:mt-12">
+              <h3 className="text-2xl font-bold tracking-tight">Overview</h3>
+              <Card className="border border-blue-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Total Revenue
+                    Total Users
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -70,16 +110,18 @@ export default function Page() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">$45,231.89</div>
+                  <div className="text-2xl font-bold">
+                    {dashboardData.totalUsers}
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     +20.1% from last month
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="border border-blue-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Subscriptions
+                    Total News Articles
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -97,15 +139,19 @@ export default function Page() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+2350</div>
+                  <div className="text-2xl font-bold">
+                    {dashboardData.totalNewsArticles}
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     +180.1% from last month
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="border border-blue-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Total Feedbacks
+                  </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -121,16 +167,18 @@ export default function Page() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+12,234</div>
+                  <div className="text-2xl font-bold">
+                    {dashboardData.totalFeedbacks}
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     +19% from last month
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="border border-blue-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Active Now
+                    Total Predictions
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -146,14 +194,16 @@ export default function Page() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+573</div>
+                  <div className="text-2xl font-bold">
+                    {dashboardData.totalPredictions}
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     +201 since last hour
                   </p>
                 </CardContent>
               </Card>
             </div>
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
+            {/* <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4">
                 <CardHeader>
                   <CardTitle>Overview</CardTitle>
@@ -173,7 +223,7 @@ export default function Page() {
                   <RecentSales />
                 </CardContent>
               </Card>
-            </div>
+            </div> */}
           </TabsContent>
         </Tabs>
       </div>
