@@ -17,6 +17,7 @@ import axios, {
 } from "../api/axios";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import PopupModal from "../components/PopupModal";
 
 const Predict = () => {
   const containerRefForChords = useRef();
@@ -27,6 +28,8 @@ const Predict = () => {
   const [isLoading, setIsLoading] = useState(false);
   const random = (min, max) => Math.random() * (max - min) + min;
   const [selectedMethod, setSelectedMethod] = useState(0); // State variable for selected radio button
+  const [open, setOpen] = useState(false);
+  const handlePopupControl = () => setOpen((cur) => !cur);
 
   const randomColor = () =>
     `rgba(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)}, 0.5)`;
@@ -149,6 +152,10 @@ const Predict = () => {
 
   // Function to handle radio button change
   const handleMethodChange = (e) => {
+    if (parseInt(e.target.value) === 1 || parseInt(e.target.value) === 2) {
+      handlePopupControl();
+    }
+
     setSelectedMethod(parseInt(e.target.value)); // Convert value to integer
   };
 
@@ -276,6 +283,36 @@ const Predict = () => {
                   Upload Audio File
                 </Typography>
 
+                <div className="flex justify-center gap-10 mx-auto mb-5">
+                  <Radio
+                    name="method"
+                    label="Chords Only"
+                    color="light-blue"
+                    labelProps={{ className: "text-white" }}
+                    value={0}
+                    onChange={handleMethodChange}
+                    checked={selectedMethod === 0} // Check if this radio button is selected
+                  />
+                  <Radio
+                    name="method"
+                    label="Notes Only"
+                    color="light-blue"
+                    labelProps={{ className: "text-white" }}
+                    value={1}
+                    onChange={handleMethodChange}
+                    checked={selectedMethod === 1} // Check if this radio button is selected
+                  />
+                  <Radio
+                    name="method"
+                    label="Both"
+                    color="light-blue"
+                    labelProps={{ className: "text-white" }}
+                    value={2}
+                    onChange={handleMethodChange}
+                    checked={selectedMethod === 2} // Check if this radio button is selected
+                  />
+                </div>
+
                 <div className="flex items-center justify-center w-full mb-8">
                   <label
                     htmlFor="dropzone-file"
@@ -308,7 +345,7 @@ const Predict = () => {
                         Limit: 1 File
                       </p>
                       {file && (
-                        <h2 className="text-gray-500 dark:text-gray-400 pt-5">
+                        <h2 className="text-gray-500 dark:text-gray-400 pt-5 font-bold">
                           {file.name}
                         </h2>
                       )}
@@ -322,36 +359,6 @@ const Predict = () => {
                     />
                   </label>
                 </div>
-              </div>
-
-              <div className="flex justify-center gap-10 mx-auto mb-5">
-                <Radio
-                  name="method"
-                  label="Chords Only"
-                  color="light-blue"
-                  labelProps={{ className: "text-white" }}
-                  value={0}
-                  onChange={handleMethodChange}
-                  checked={selectedMethod === 0} // Check if this radio button is selected
-                />
-                <Radio
-                  name="method"
-                  label="Notes Only"
-                  color="light-blue"
-                  labelProps={{ className: "text-white" }}
-                  value={1}
-                  onChange={handleMethodChange}
-                  checked={selectedMethod === 1} // Check if this radio button is selected
-                />
-                <Radio
-                  name="method"
-                  label="Both"
-                  color="light-blue"
-                  labelProps={{ className: "text-white" }}
-                  value={2}
-                  onChange={handleMethodChange}
-                  checked={selectedMethod === 2} // Check if this radio button is selected
-                />
               </div>
 
               <div>
@@ -446,6 +453,7 @@ const Predict = () => {
           </ButtonGroup>
         </div>
       </div>
+      <PopupModal open={open} handleOpen={handlePopupControl} />
     </>
   );
 };
