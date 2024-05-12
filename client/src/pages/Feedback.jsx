@@ -1,17 +1,37 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ComplexNavbar } from "../components/NavBar";
 import getScrollAnimation from "../utils/getScrollAnimation";
 import ScrollAnimationWrapper from "../components/ScrollAnimationWrapper";
 import { motion } from "framer-motion";
-import { Button, IconButton, Input, Textarea } from "@material-tailwind/react";
+import { Button, Input, Textarea, Typography } from "@material-tailwind/react";
 import { FeedbackSchema } from "../models/Feedback";
 import { validateFeedbackData } from "../utils/FeedbackValidation";
-import axios, { CREATE_FEEDBACK } from "../api/axios";
+import axios, { CREATE_FEEDBACK, GET_ALL_ACTIVE_FEEDBACKS } from "../api/axios";
 import { ReactToast } from "../utils/ReactToast";
+import FeedbackCard from "../components/FeedbackCard";
 
 const Feedback = () => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
   const [feedbackData, setFeedbackData] = useState(FeedbackSchema);
+  const [feedbacks, setFeedbacks] = useState([FeedbackSchema]);
+
+  useEffect(() => {
+    const getAllActiveFeedbacks = async () => {
+      try {
+        const response = await axios.get(GET_ALL_ACTIVE_FEEDBACKS);
+
+        if (response.status === 404) return;
+
+        setFeedbacks(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAllActiveFeedbacks();
+  }, []);
+
+  console.log(feedbacks);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +43,8 @@ const Feedback = () => {
         if (response.status !== 201) return;
 
         ReactToast("Feedback posted successfully, Thank You!", "success");
+
+        setFeedbacks([...feedbacks, response.data]);
       } catch (error) {
         console.log(error);
       }
@@ -138,6 +160,29 @@ const Feedback = () => {
             </motion.div>
           </div>
         </ScrollAnimationWrapper>
+        <div className="mx-auto max-w-screen-md px-4">
+          <Typography
+            variant="h4"
+            className="text-white text-center my-5 text-3xl tracking-tight font-extrabold"
+          >
+            Recent Feedbacks
+          </Typography>
+          <div className="overflow-scroll max-h-[800px] p-5 rounded-lg">
+            {feedbacks ? (
+              feedbacks.map((feedback) => (
+                <FeedbackCard
+                  key={feedback._id}
+                  firstName={feedback.firstName}
+                  lastName={feedback.lastName}
+                  email={feedback.email}
+                  feedback={feedback.feedback}
+                />
+              ))
+            ) : (
+              <div>No Feedbacks are Currently Availabel</div>
+            )}
+          </div>
+        </div>
         <div className="px-4 mx-auto max-w-screen-xl sm:py-24 lg:py-0 lg:pb-10 lg:px-6">
           <ScrollAnimationWrapper>
             <div className="text-center md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0 pt-20">
@@ -166,13 +211,13 @@ const Feedback = () => {
                   partnership opportunities.
                 </p>
                 <Button
-                  href="mailto:abc@example.com"
+                  href="mailto:guestpc87@gmail.com"
                   className="font-semibold text-primary-500 hover:underline lowercase text-base"
                   variant="outlined"
                   color="blue"
                   size="sm"
                 >
-                  hello@flowbite.com
+                  support@musify.com
                 </Button>
               </motion.div>
               <motion.div
@@ -204,7 +249,7 @@ const Feedback = () => {
                   size="sm"
                   className="font-semibold text-primary-500 text-base"
                 >
-                  +1 (646) 786-5060
+                  +94 (71) 010-1773
                 </Button>
               </motion.div>
               <motion.div
@@ -231,14 +276,13 @@ const Feedback = () => {
                 </div>
                 <p className="mb-2 text-xl font-bold text-white">Support</p>
                 <p className="mb-3 text-gray-400">
-                  Email us for general queries, including marketing and
-                  partnership opportunities.
+                  We are here to help you with any questions you may have.
                 </p>
                 <Button
                   variant="outlined"
                   color="blue"
                   size="sm"
-                  className="inline-flex py-2 px-4 text-sm font-medium text-center rounded-lg border text-primary-600 border-primary-600 hover:text-white hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:border-primary-500 dark:text-primary-500 dark:hover:text-white dark:hover:bg-primary-600 dark:focus:ring-primary-800"
+                  className="inline-flex py-2 px-4 text-sm font-medium text-center rounded-lg border focus:ring-4 focus:outline-none border-primary-500 text-primary-500 hover:text-white hover:bg-primary-600 focus:ring-primary-800"
                 >
                   Support center
                 </Button>
