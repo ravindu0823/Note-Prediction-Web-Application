@@ -16,18 +16,14 @@ const TABLE_HEAD = [
 
 const AudioHistoryTable = ({ historyData, onClick }) => {
   const extractSongName = (songName) => {
-    // Split the path by 'Z' and take the last part
-    const parts = songName.split("Z");
-    const lastPart = parts.pop();
-
-    // Use regular expression to match the pattern and extract the song name
-    const match = lastPart.match(/([\w-]+)(?=\.\w{3}$)/);
-
-    // Replace underscores or hyphens with spaces
-    return match ? match[0].replace(/[_-]/g, " ") : null;
+    // Remove the .mp3 extension
+    let formattedName = songName.replace(/\.(mp3|wav)$/, "");
+    // Replace underscores and hyphens with spaces
+    formattedName = formattedName.replace(/[_-]/g, " ");
+    return formattedName;
   };
 
-  const sortChordsByName = (audioData) => {
+  const sortMostlyUsedData = (audioData) => {
     // Sort the array by the chord name
     const sortedAudioData = audioData.sort((a, b) =>
       a.note.localeCompare(b.note)
@@ -41,7 +37,12 @@ const AudioHistoryTable = ({ historyData, onClick }) => {
     // Convert the Set back to an array to return the unique chord names
     const uniqueArray = Array.from(uniqueAudioDataSet);
 
-    return uniqueArray.join(", ");
+    // Remove N note from the array
+    const uniqueArrayWithOutN = uniqueArray.filter(
+      (element) => !element.includes("N")
+    );
+
+    return uniqueArrayWithOutN.join(", ");
   };
   return (
     <>
@@ -84,7 +85,7 @@ const AudioHistoryTable = ({ historyData, onClick }) => {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {chords.length > 0 ? sortChordsByName(chords) : "N/A"}
+                      {chords.length > 0 ? sortMostlyUsedData(chords) : "N/A"}
                     </Typography>
                   </td>
                   <td className="p-4">
@@ -93,7 +94,7 @@ const AudioHistoryTable = ({ historyData, onClick }) => {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {notes.length > 0 ? sortChordsByName(notes) : "N/A"}
+                      {notes.length > 0 ? sortMostlyUsedData(notes) : "N/A"}
                     </Typography>
                   </td>
                   <td className="p-4">
