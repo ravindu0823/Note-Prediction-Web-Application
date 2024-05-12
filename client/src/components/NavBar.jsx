@@ -118,7 +118,7 @@ export function ComplexNavbar({ className }) {
 
         <div className="flex items-center">
           {isSignedIn ? (
-            <ProfileMenu profileMenuItems={profileMenuItems} />
+            <ProfileMenu profileMenuItems={profileMenuItems} image={user?.image} />
           ) : (
             <Button
               variant="text"
