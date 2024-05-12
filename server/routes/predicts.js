@@ -23,7 +23,7 @@ predictionRouter.post(
     // Access the file inside the uploads folder
     const file = req.file;
     const { userId } = req.params;
-    const songPath = file.path;
+    const songPath = file.filename;
     const songData = {
       userId,
       songPath,
@@ -83,7 +83,7 @@ predictionRouter.post(
     // Access the file inside the uploads folder
     const file = req.file;
     const { userId } = req.params;
-    const songPath = file.path;
+    const songPath = file.filename;
     const songData = {
       userId,
       songPath,
@@ -143,7 +143,7 @@ predictionRouter.post(
     // Access the file inside the uploads folder
     const file = req.file;
     const { userId } = req.params;
-    const songPath = file.path;
+    const songPath = file.filename;
     const songData = {
       userId,
       songPath,
@@ -156,11 +156,6 @@ predictionRouter.post(
         "Content-Type": "multipart/form-data",
       },
     });
-
-    /* res.status(201).json({
-      userId,
-      songPath,
-    }); */
 
     try {
       const response = await axios.post(
@@ -201,6 +196,38 @@ predictionRouter.post(
     }
   }
 );
+
+predictionRouter.get("/all", async (req, res) => {
+  try {
+    const predictions = await Prediction.find()
+      .populate("songId")
+      .populate("userId");
+
+    if (!predictions) {
+      res.status(404).json("No predictions found");
+    }
+
+    res.status(200).json(predictions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+});
+
+predictionRouter.get("/count", async (req, res) => {
+  try {
+    const predictions = await Prediction.find();
+
+    if (!predictions) {
+      res.status(404).json("No predictions found");
+    }
+
+    res.status(200).json({ count: predictions.length });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+});
 
 predictionRouter.get("/:userId", async (req, res) => {
   const { userId } = req.params;
