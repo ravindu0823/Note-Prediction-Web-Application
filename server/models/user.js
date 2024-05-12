@@ -26,6 +26,11 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "Please enter password"],
   },
+
+  image: {
+    type: String,
+  },
+
   status: {
     type: String,
     default: "Active",
