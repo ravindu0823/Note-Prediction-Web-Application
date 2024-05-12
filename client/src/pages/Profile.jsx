@@ -1,4 +1,4 @@
-import { Button, Input, Typography } from "@material-tailwind/react";
+import { Avatar, Button, Input, Typography } from "@material-tailwind/react";
 import { ComplexNavbar } from "../components/NavBar";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { PredictSchema } from "../models/Predict";
@@ -15,13 +15,20 @@ import ScrollAnimationWrapper from "../components/ScrollAnimationWrapper";
 import { motion } from "framer-motion";
 import getScrollAnimation from "../utils/getScrollAnimation";
 import { ReactToast } from "../utils/ReactToast";
+import ButtonPrimary from "../components/ButtonPrimary";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [historyData, setHistoryData] = useState([PredictSchema]);
   const [userData, setUserData] = useState(UserData);
-  const { user, signOut } = useContext(AuthContext);
+  const { user, signOut, setUser } = useContext(AuthContext);
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
+
+  const handleClick = () => {
+    document.getElementById("fileInput").click();
+  };
 
   useEffect(() => {
     const getHistory = async () => {
@@ -44,6 +51,10 @@ const Profile = () => {
         if (response.status === 404) return;
 
         setUserData(response.data.user);
+        setUser({
+          ...user,
+          image: response.data.user.image,
+        });
       } catch (error) {
         console.log(error);
       } finally {
@@ -53,7 +64,7 @@ const Profile = () => {
 
     getUserData();
     getHistory();
-  }, [user]);
+  }, [setUser]);
 
   const handleDeleteHistory = async (id) => {
     console.log(id);
@@ -69,6 +80,19 @@ const Profile = () => {
     }
   };
 
+  const convertToBase64 = (e) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+
+    reader.onload = function () {
+      setUserData({ ...userData, image: reader.result });
+    };
+
+    reader.onerror = function (error) {
+      console.log("Error: ", error);
+    };
+  };
+
   const handleUserUpdate = async () => {
     console.log(userData);
 
@@ -80,6 +104,13 @@ const Profile = () => {
       if (response.status === 404) return;
 
       setUserData(response.data.newUser);
+      setUser({
+        ...user,
+        fullName: response.data.newUser.fullName,
+        email: response.data.newUser.email,
+        image: response.data.newUser.image,
+      });
+
       ReactToast("Profile updated successfully", "success");
     } catch (error) {
       console.log(error);
@@ -103,13 +134,33 @@ const Profile = () => {
                   alt="Mountain"
                 />
               </div>
-              <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
-                <img
-                  className="object-cover object-center h-32"
-                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
-                  alt="Woman looking front"
+              <div
+                className="mx-auto w-32 h-32 relative border-2 border-blue-500 -mt-16 rounded-full overflow-hidden"
+                onClick={handleClick}
+              >
+                <Avatar
+                  size="lg"
+                  variant="rounded"
+                  withBorder={true}
+                  color="blue"
+                  alt="avatar"
+                  src={
+                    userData.image
+                      ? userData.image
+                      : user.image
+                      ? user.image
+                      : "https://docs.material-tailwind.com/img/face-2.jpg"
+                  }
+                  className="object-cover object-center w-full h-full border"
+                />
+                <input
+                  type="file"
+                  id="fileInput"
+                  style={{ display: "none" }}
+                  onChange={convertToBase64}
                 />
               </div>
+
               <Typography
                 variant="lead"
                 className="text-center text-white mt-2"
@@ -198,9 +249,14 @@ const Profile = () => {
                   onClick={handleDeleteHistory}
                 />
               ) : (
-                <Typography variant="lead" className="mt-5">
-                  You have no previous predicted data
-                </Typography>
+                <div className="flex flex-col items-center">
+                  <Typography variant="lead" className="mt-5">
+                    You have no previous predicted data
+                  </Typography>
+                  <ButtonPrimary addClass={"mt-32 w-fit"} onClick={() => navigate("/predict")}>
+                    Analyze Song
+                  </ButtonPrimary>
+                </div>
               )}
             </div>
           </motion.div>
